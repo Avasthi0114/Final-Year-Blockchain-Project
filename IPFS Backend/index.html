@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IPFS File Upload and Retrieval</title>
+</head>
+<body>
+    <h1>Upload a File to IPFS</h1>
+    <form id="uploadForm">
+        <input type="file" id="fileInput" name="file" required>
+        <button type="submit">Upload</button>
+    </form>
+
+    <div id="uploadResponse"></div>
+
+    <h1>Retrieve a File from IPFS</h1>
+    <form id="retrieveForm">
+        <label for="cidInput">Enter File CID</label>
+        <input type="text" id="cidInput" name="cid" required>
+        <button type="submit">Retrieve</button>
+    </form>
+
+    <div id="retrieveResponse"></div>
+
+    <script>
+        // Handle file upload
+        document.getElementById('uploadForm').addEventListener('submit', async (event) => {
+            event.preventDefault(); // Prevent default form submission
+            const fileInput = document.getElementById('fileInput');
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]); // Add the selected file to FormData
+
+            try {
+                const response = await fetch('http://localhost:4300/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+                const result = await response.json();
+                document.getElementById('uploadResponse').innerText = `File added to IPFS with hash: ${result.hash}`;
+            } catch (error) {
+                console.error('Error uploading file:', error);
+                document.getElementById('uploadResponse').innerText = 'Error uploading file.';
+            }
+        });
+
+        // Handle file retrieval by CID
+        document.getElementById('retrieveForm').addEventListener('submit', async (event) => {
+            event.preventDefault(); // Prevent default form submission
+            const cidInput = document.getElementById('cidInput').value;
+
+            try {
+                const response = await fetch('http://localhost:4300/getFile', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ evidenceCID: cidInput })
+                });
+
+                const result = await response.json();
+
+                // Decode base64 and create a downloadable file link
+                const fileBuffer = atob(result.fileBuffer); // Decode the base64
+                const byteArray = new Uint8Array(fileBuffer.length);
+
+                // Fill the byteArray with the binary data
+                for (let i = 0; i < fileBuffer.length; i++) {
+                    byteArray[i] = fileBuffer.charCodeAt(i);
+                }
+
+                // Create a Blob from the byteArray
+                const blob = new Blob([byteArray]);
+                const url = URL.createObjectURL(blob);
+
+                // Create a download link with password protection
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = cidInput; // Set the CID as the filename
+                link.innerText = "Download File";
+
+                // Attach an event listener to prompt for a password before downloading
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const password = prompt("Enter password to download the file:");
+
+                    // Check the password (this is just a simple check for demonstration)
+                    const correctPassword = "12345"; // You can replace this with actual password validation logic
+
+                    if (password === correctPassword) {
+                        // If the password is correct, allow the download
+                        window.location.href = link.href;
+                    } else {
+                        alert("Incorrect password. Access denied.");
+                    }
+                });
+
+                document.getElementById('retrieveResponse').appendChild(link);
+
+            } catch (error) {
+                console.error('Error retrieving file:', error);
+                document.getElementById('retrieveResponse').innerText = 'Error retrieving file.';
+            }
+        });
+
+    </script>
+</body>
+</html>
