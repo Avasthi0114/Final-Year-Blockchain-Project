@@ -142,7 +142,7 @@ app.post('/channels', async function (req, res) {
 	var channelName = req.body.channelName;
 	var channelConfigPath = req.body.channelConfigPath;
 	logger.debug('Channel name : ' + channelName);
-	logger.debug('channelConfigPath : ' + channelConfigPath); //../artifacts/channel/mychannel.tx
+	logger.debug('channelConfigPath : ' + channelConfigPath); //../artifacts/channel/fir-channel.tx
 	if (!channelName) {
 		res.json(getErrorMessage('\'channelName\''));
 		return;
@@ -344,8 +344,15 @@ app.get('/channels/:channelName/chaincodes/:chaincodeName', async function (req,
 	args = JSON.parse(args);
 	logger.debug(args);
 
+	// let message = await query.queryChaincode(peer, channelName, chaincodeName, args, fcn, req.username, req.orgname);
+	// res.send(message);
+
 	let message = await query.queryChaincode(peer, channelName, chaincodeName, args, fcn, req.username, req.orgname);
-	res.send(message);
+    logger.debug('Query result:', message);  // Log the response message
+    // res.send(message);
+	res.status(200).send({ data: message });
+
+
 });
 
 //  Query Get Block by BlockNumber

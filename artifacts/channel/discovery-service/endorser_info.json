@@ -1,6 +1,6 @@
 [
     {
-            "Chaincode": "fabcar",
+            "Chaincode": "FIRManagement",
             "EndorsersByGroups": {
                     "G0": [
                             {

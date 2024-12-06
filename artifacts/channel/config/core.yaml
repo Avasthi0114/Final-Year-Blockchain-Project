@@ -300,6 +300,8 @@ peer:
 
     # Path on the file system where peer will find MSP local configurations
     mspConfigPath: msp
+    #mspConfigPath: /home/avasthijadhav/custom_v2.0/BasicNetwork-2.0/artifacts/channel/crypto-config/peerOrganizations/org1.example.com/msp
+
 
     # Identifier of the local MSP
     # ----!!!!IMPORTANT!!!-!!!IMPORTANT!!!-!!!IMPORTANT!!!!----

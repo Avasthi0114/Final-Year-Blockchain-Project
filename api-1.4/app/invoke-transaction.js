@@ -31,8 +31,8 @@ var invokeChaincode = async function (peerNames, channelName, chaincodeName, fcn
 		var channel = client.getChannel(channelName);
 		if (!channel) {
 			let message = util.format('Channel %s was not defined in the connection profile', channelName);
-			logger.error(message);
-			throw new Error(message);
+			logger.error('hello',message);
+			throw new Error('hii',message);
 		}
 		var tx_id = client.newTransactionID();
 		// will need the transaction ID string for the event registration later
@@ -172,3 +172,5 @@ var invokeChaincode = async function (peerNames, channelName, chaincodeName, fcn
 
 
 exports.invokeChaincode = invokeChaincode;
+
+//eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MzMxNTQzODMsInVzZXJuYW1lIjoiYXZhc3RoaSIsIm9yZ05hbWUiOiJPcmcxIiwiaWF0IjoxNzMzMTE4MzgzfQ.7rVClEBJNzjL7JA6Nxa-e-5BccJblHkUmju_yScT2gY

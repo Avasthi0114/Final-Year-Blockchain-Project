@@ -3,7 +3,7 @@ x-type: "hlfv1"
 description: "Basic network"
 version: "1.0"
 channels:
-  mychannel:
+  fir-channel:
     orderers:
       - orderer.example.com
 

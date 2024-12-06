@@ -14,7 +14,7 @@ Configuration is stored in config.json:
 
 {
    "peer_name": "peer0.org1.example.com",
-   "channelid": "mychannel",
+   "channelid": "fir-channel",
    "use_couchdb":false,
    "couchdb_address": "http://localhost:5990"
 }
@@ -135,7 +135,7 @@ async function main() {
         await gateway.connect(ccp, { wallet, identity: 'pavan1', discovery: { enabled: true, asLocalhost: true } });
 
         // Get the network (channel) our contract is deployed to.
-        const network = await gateway.getNetwork('mychannel');
+        const network = await gateway.getNetwork('fir-channel');
 
         const listener = await network.addBlockListener(
             async (block) => {
