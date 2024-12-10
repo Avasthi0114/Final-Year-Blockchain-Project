@@ -61,6 +61,8 @@ func (s *SmartContract) Invoke(APIstub shim.ChaincodeStubInterface) sc.Response 
 	switch function {
 	case "addComplaint":
 		return s.addComplaint(APIstub, args)
+	case "updateDateToForOfficer":
+		return s.updateDateToForOfficer(APIstub, args)
 	case "changeOfficer":
 		return s.changeOfficer(APIstub, args)
 	case "updateEvidenceHash":
@@ -72,7 +74,7 @@ func (s *SmartContract) Invoke(APIstub shim.ChaincodeStubInterface) sc.Response 
 	case "getComplaintDetails":
 		return s.getComplaintDetails(APIstub, args)
 	case "getComplaintHistory":
-		return s.getComplaintHistory(APIstub, args) 
+		return s.getComplaintHistory(APIstub, args) 	
 	default:
 		return shim.Error("Invalid Smart Contract function name.")
 	}
@@ -182,15 +184,52 @@ func (s *SmartContract) addComplaint(APIstub shim.ChaincodeStubInterface, args [
 // }
 
 
-func (s *SmartContract) changeOfficer(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
-	if len(args) != 4 {
-		return shim.Error("Incorrect number of arguments. Expecting 4.")
+// Function to update the DateTo for the current officer
+// func (s *SmartContract) updateDateToForOfficer(APIstub shim.ChaincodeStubInterface, complaintID string, dateTo string) error {
+// 	// Get the FIR record
+// 	firAsBytes, err := APIstub.GetState(complaintID)
+// 	if err != nil {
+// 		return fmt.Errorf("Failed to get FIR: %s", err.Error())
+// 	} else if firAsBytes == nil {
+// 		return fmt.Errorf("FIR with ComplaintID %s not found", complaintID)
+// 	}
+
+// 	// Unmarshal FIR
+// 	var fir FIR
+// 	err = json.Unmarshal(firAsBytes, &fir)
+// 	if err != nil {
+// 		return fmt.Errorf("Failed to unmarshal FIR: %s", err.Error())
+// 	}
+
+// 	// Update the DateTo for the current officer
+// 	fir.OfficerDetails.DateTo = dateTo
+
+// 	// Debug: Print updated officer details
+// 	fmt.Printf("Updated Officer DateTo: %+v\n", fir.OfficerDetails)
+
+// 	// Marshal the updated FIR back to JSON
+// 	firAsBytes, err = json.Marshal(fir)
+// 	if err != nil {
+// 		return fmt.Errorf("Failed to marshal updated FIR: %s", err.Error())
+// 	}
+
+// 	// Create a separate transaction by writing the updated FIR to the ledger
+// 	err = APIstub.PutState(complaintID, firAsBytes)
+// 	if err != nil {
+// 		return fmt.Errorf("Failed to update DateTo for FIR %s: %s", complaintID, err.Error())
+// 	}
+
+// 	return nil
+// }
+
+// updateDateToForOfficer updates the DateTo for the current officer in the FIR record
+func (s *SmartContract) updateDateToForOfficer(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
+	if len(args) != 2 {
+		return shim.Error("Incorrect number of arguments. Expecting 2.")
 	}
 
 	complaintID := args[0]
-	newOfficerID := args[1]
-	newPoliceStationID := args[2]
-	newDateFrom := args[3]
+	dateTo := args[1]
 
 	// Get the FIR record
 	firAsBytes, err := APIstub.GetState(complaintID)
@@ -207,26 +246,8 @@ func (s *SmartContract) changeOfficer(APIstub shim.ChaincodeStubInterface, args 
 		return shim.Error(fmt.Sprintf("Failed to unmarshal FIR: %s", err.Error()))
 	}
 
-	// Debug: Check current officer details
-	fmt.Printf("Current Officer Details: %+v\n", fir.OfficerDetails)
-
-	// Update DateTo for the old officer
-	if fir.OfficerDetails.DateTo != "" {
-		fmt.Printf("Warning: DateTo already set to %s. Overwriting with new DateTo: %s\n", fir.OfficerDetails.DateTo, newDateFrom)
-	}
-	fir.OfficerDetails.DateTo = newDateFrom
-
-	// Debug: Check if DateTo was updated
-	fmt.Printf("Updated Officer Details (DateTo): %+v\n", fir.OfficerDetails)
-
-	// Assign new officer details
-	fir.OfficerDetails.OfficerID = newOfficerID
-	fir.OfficerDetails.PoliceStationID = newPoliceStationID
-	fir.OfficerDetails.DateFrom = newDateFrom
-	fir.OfficerDetails.DateTo = ""
-
-	// Debug: Check new officer details
-	fmt.Printf("New Officer Details: %+v\n", fir.OfficerDetails)
+	// Update the DateTo for the current officer
+	fir.OfficerDetails.DateTo = dateTo
 
 	// Marshal the updated FIR back to JSON
 	firAsBytes, err = json.Marshal(fir)
@@ -235,6 +256,65 @@ func (s *SmartContract) changeOfficer(APIstub shim.ChaincodeStubInterface, args 
 	}
 
 	// Update FIR in the ledger
+	err = APIstub.PutState(complaintID, firAsBytes)
+	if err != nil {
+		return shim.Error(fmt.Sprintf("Failed to update DateTo for FIR %s: %s", complaintID, err.Error()))
+	}
+
+	// Return success response
+	return shim.Success(nil)
+}
+
+
+// Function to change officer details
+func (s *SmartContract) changeOfficer(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
+	if len(args) != 4 {
+		return shim.Error("Incorrect number of arguments. Expecting 4.")
+	}
+
+	complaintID := args[0]
+	newOfficerID := args[1]
+	newPoliceStationID := args[2]
+	newDateFrom := args[3]
+
+	// Call updateDateToForOfficer to log the DateTo update for the current officer
+	// currentDateTo := newDateFrom // Assuming the new DateFrom is the DateTo for the current officer
+	// err := s.updateDateToForOfficer(APIstub, complaintID, currentDateTo)
+	// if err != nil {
+	// 	return shim.Error(fmt.Sprintf("Failed to update DateTo for current officer: %s", err.Error()))
+	// }
+
+	// Get the FIR record
+	firAsBytes, err := APIstub.GetState(complaintID)
+	if err != nil {
+		return shim.Error(fmt.Sprintf("Failed to get FIR: %s", err.Error()))
+	} else if firAsBytes == nil {
+		return shim.Error(fmt.Sprintf("FIR with ComplaintID %s not found.", complaintID))
+	}
+
+	// Unmarshal FIR
+	var fir FIR
+	err = json.Unmarshal(firAsBytes, &fir)
+	if err != nil {
+		return shim.Error(fmt.Sprintf("Failed to unmarshal FIR: %s", err.Error()))
+	}
+
+	// Assign new officer details
+	fir.OfficerDetails.OfficerID = newOfficerID
+	fir.OfficerDetails.PoliceStationID = newPoliceStationID
+	fir.OfficerDetails.DateFrom = newDateFrom
+	fir.OfficerDetails.DateTo = ""
+
+	// Debug: Print new officer details
+	fmt.Printf("New Officer Details: %+v\n", fir.OfficerDetails)
+
+	// Marshal the updated FIR back to JSON
+	firAsBytes, err = json.Marshal(fir)
+	if err != nil {
+		return shim.Error(fmt.Sprintf("Failed to marshal updated FIR: %s", err.Error()))
+	}
+
+	// Update FIR in the ledger (create a new transaction for the updated state)
 	err = APIstub.PutState(complaintID, firAsBytes)
 	if err != nil {
 		return shim.Error(fmt.Sprintf("Failed to change officer for FIR %s: %s", complaintID, err.Error()))
@@ -369,68 +449,122 @@ func (s *SmartContract) getComplaintDetails(APIstub shim.ChaincodeStubInterface,
 }
 
 
-     func (t *SmartContract) getComplaintHistory(stub shim.ChaincodeStubInterface, args []string) sc.Response {
+    //  func (t *SmartContract) getComplaintHistory(stub shim.ChaincodeStubInterface, args []string) sc.Response {
 
-	 if len(args) < 1 {
-	     return shim.Error("Incorrect number of arguments. Expecting 1")
-	 }
+	//  if len(args) < 1 {
+	//      return shim.Error("Incorrect number of arguments. Expecting 1")
+	//  }
 	
-	 complaintID := args[0]
+	//  complaintID := args[0]
 	
-	 resultsIterator, err := stub.GetHistoryForKey(complaintID)
-	 if err != nil {
-	     return shim.Error(err.Error())
-	 }
-	 defer resultsIterator.Close()
+	//  resultsIterator, err := stub.GetHistoryForKey(complaintID)
+	//  if err != nil {
+	//      return shim.Error(err.Error())
+	//  }
+	//  defer resultsIterator.Close()
 	
-	 // buffer is a JSON array containing historic values for the marble
-	 var buffer bytes.Buffer
-	 buffer.WriteString("[")
+	//  // buffer is a JSON array containing historic values for the marble
+	//  var buffer bytes.Buffer
+	//  buffer.WriteString("[")
 	
-	 bArrayMemberAlreadyWritten := false
-	 for resultsIterator.HasNext() {
-	     response, err := resultsIterator.Next()
-	     if err != nil {
-	         return shim.Error(err.Error())
-	     }
-	     // Add a comma before array members, suppress it for the first array member
-	     if bArrayMemberAlreadyWritten == true {
-	         buffer.WriteString(",")
-	     }
-	     buffer.WriteString("{\"TxId\":")
-	     buffer.WriteString("\"")
-	     buffer.WriteString(response.TxId)
-	     buffer.WriteString("\"")
+	//  bArrayMemberAlreadyWritten := false
+	//  for resultsIterator.HasNext() {
+	//      response, err := resultsIterator.Next()
+	//      if err != nil {
+	//          return shim.Error(err.Error())
+	//      }
+	//      // Add a comma before array members, suppress it for the first array member
+	//      if bArrayMemberAlreadyWritten == true {
+	//          buffer.WriteString(",")
+	//      }
+	//      buffer.WriteString("{\"TxId\":")
+	//      buffer.WriteString("\"")
+	//      buffer.WriteString(response.TxId)
+	//      buffer.WriteString("\"")
 	
-	     buffer.WriteString(", \"Value\":")
-	     // if it was a delete operation on given key, then we need to set the
-	     //corresponding value null. Else, we will write the response.Value
-	     //as-is (as the Value itself a JSON marble)
-	     if response.IsDelete {
-	         buffer.WriteString("null")
-	     } else {
-	         buffer.WriteString(string(response.Value))
-	     }
+	//      buffer.WriteString(", \"Value\":")
+	//      // if it was a delete operation on given key, then we need to set the
+	//      //corresponding value null. Else, we will write the response.Value
+	//      //as-is (as the Value itself a JSON marble)
+	//      if response.IsDelete {
+	//          buffer.WriteString("null")
+	//      } else {
+	//          buffer.WriteString(string(response.Value))
+	//      }
 	
-	     buffer.WriteString(", \"Timestamp\":")
-	     buffer.WriteString("\"")
-	     buffer.WriteString(time.Unix(response.Timestamp.Seconds, int64(response.Timestamp.Nanos)).String())
-	     buffer.WriteString("\"")
+	//      buffer.WriteString(", \"Timestamp\":")
+	//      buffer.WriteString("\"")
+	//      buffer.WriteString(time.Unix(response.Timestamp.Seconds, int64(response.Timestamp.Nanos)).String())
+	//      buffer.WriteString("\"")
 	
-	     buffer.WriteString(", \"IsDelete\":")
-	     buffer.WriteString("\"")
-	     buffer.WriteString(strconv.FormatBool(response.IsDelete))
-	     buffer.WriteString("\"")
+	//      buffer.WriteString(", \"IsDelete\":")
+	//      buffer.WriteString("\"")
+	//      buffer.WriteString(strconv.FormatBool(response.IsDelete))
+	//      buffer.WriteString("\"")
 	
-	     buffer.WriteString("}")
-	     bArrayMemberAlreadyWritten = true
-	 }
-	 buffer.WriteString("]")
+	//      buffer.WriteString("}")
+	//      bArrayMemberAlreadyWritten = true
+	//  }
+	//  buffer.WriteString("]")
 	
-	 fmt.Printf("- getComplaintHistory returning:\n%s\n", buffer.String())
+	//  fmt.Printf("- getComplaintHistory returning:\n%s\n", buffer.String())
 	
-	 return shim.Success(buffer.Bytes())
+	//  return shim.Success(buffer.Bytes())
+	// }
+
+	func (t *SmartContract) getComplaintHistory(stub shim.ChaincodeStubInterface, args []string) sc.Response {
+		if len(args) != 1 || args[0] == "" {
+			return shim.Error("Incorrect number of arguments. Expecting 1, and the complaint ID cannot be empty.")
+		}
+	
+		complaintID := args[0]
+	
+		// Get the history for the complaintID
+		resultsIterator, err := stub.GetHistoryForKey(complaintID)
+		if err != nil {
+			return shim.Error(err.Error())
+		}
+		defer resultsIterator.Close()
+	
+		var buffer bytes.Buffer
+		buffer.WriteString("[")
+	
+		bArrayMemberAlreadyWritten := false
+		for resultsIterator.HasNext() {
+			response, err := resultsIterator.Next()
+			if err != nil {
+				return shim.Error(err.Error())
+			}
+	
+			if bArrayMemberAlreadyWritten {
+				buffer.WriteString(",")
+			}
+	
+			buffer.WriteString("{\"TxId\":\"")
+			buffer.WriteString(response.TxId)
+			buffer.WriteString("\", \"Value\":")
+			
+			if response.IsDelete {
+				buffer.WriteString("null")
+			} else {
+				buffer.WriteString(string(response.Value))
+			}
+	
+			buffer.WriteString(", \"Timestamp\":\"")
+			buffer.WriteString(time.Unix(response.Timestamp.Seconds, int64(response.Timestamp.Nanos)).String())
+			buffer.WriteString("\", \"IsDelete\":\"")
+			buffer.WriteString(strconv.FormatBool(response.IsDelete))
+			buffer.WriteString("\"}")
+	
+			bArrayMemberAlreadyWritten = true
+		}
+		buffer.WriteString("]")
+	
+		fmt.Printf("- getComplaintHistory returning:\n%s\n", buffer.String())
+	
+		return shim.Success(buffer.Bytes())
 	}
+	
 
 // main function
 func main() {
