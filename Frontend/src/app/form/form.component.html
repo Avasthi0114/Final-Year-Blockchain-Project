@@ -1,0 +1,355 @@
+<div class="top-menu">
+  <button>Home</button>
+  <button>About Us</button>
+  <button   routerLink="">Sign out</button>
+   
+  <!-- <button>e-FIR</button> -->
+</div>
+
+<h1 class="heading">Complainant form</h1>
+<form [formGroup]="complainantForm" (ngSubmit)="submitAction()">
+  <div class="personal-details">
+    <h1>Personal Details:</h1>
+    <hr />
+
+    <div class="form-row">
+      <label>
+        Name:<span class="required">*</span>
+        <input type="text" formControlName="UserName" placeholder="Enter name (ex- xyz)"
+               [ngClass]="{'is-invalid': complainantForm.get('UserName')?.invalid && (complainantForm.get('UserName')?.touched || complainantForm.get('UserName')?.dirty)}" />
+      </label>
+      <div *ngIf="complainantForm.get('UserName')?.invalid && (complainantForm.get('UserName')?.touched || complainantForm.get('UserName')?.dirty)" class="error-msg">
+        <!-- Required validation message -->
+        <div *ngIf="complainantForm.get('UserName')?.hasError('required')">
+          Name is required.
+        </div>
+        <!-- Pattern validation message -->
+        <div *ngIf="complainantForm.get('UserName')?.hasError('pattern') && !complainantForm.get('UserName')?.hasError('required')">
+          Name must contain only characters.
+        </div>
+      </div>
+      
+      <label>
+        Father's or Husband's Name:<span class="required">*</span>
+        <input type="text" formControlName="FatherOrHusbandName" placeholder=" Enter father's or husband's name (ex- xyz)"
+               [ngClass]="{'is-invalid': complainantForm.get('FatherOrHusbandName')?.invalid && (complainantForm.get('FatherOrHusbandName')?.touched || complainantForm.get('FatherOrHusbandName')?.dirty)}" />
+      </label>
+      <div *ngIf="complainantForm.get('FatherOrHusbandName')?.invalid && (complainantForm.get('FatherOrHusbandName')?.touched || complainantForm.get('FatherOrHusbandName')?.dirty)" class="error-msg">
+        <!-- Required validation message -->
+        <div *ngIf="complainantForm.get('FatherOrHusbandName')?.hasError('required')">
+          Father's or Husband's Name is required.
+        </div>
+        <!-- Pattern validation message -->
+        <div *ngIf="complainantForm.get('FatherOrHusbandName')?.hasError('pattern') && !complainantForm.get('FatherOrHusbandName')?.hasError('required')">
+          Father's or Husband's Name must contain only characters.
+        </div>
+      </div>
+
+       
+    </div>
+
+    <div class="form-row">
+      <label>
+        Date of Birth:<span class="required">*</span>
+         
+        <input type="date" formControlName="DateOfBirth"  
+               [ngClass]="{'is-invalid': complainantForm.get('DateOfBirth')?.invalid && (complainantForm.get('DateOfBirth')?.touched || complainantForm.get('DateOfBirth')?.dirty)}" />
+      </label>
+      <div *ngIf="complainantForm.get('DateOfBirth')?.invalid && (complainantForm.get('DateOfBirth')?.touched || complainantForm.get('DateOfBirth')?.dirty)" class="error-msg">
+        <!-- Required validation message -->
+        <div *ngIf="complainantForm.get('DateOfBirth')?.hasError('required')">
+          Date of Birth is required.
+        </div>
+        <!-- Custom validation message -->
+        <div *ngIf="complainantForm.get('DateOfBirth')?.hasError('dateNotValid')">
+          Date of Birth must be before today.
+        </div>
+      </div>
+
+      <label>
+        Phone Number:<span class="required">*</span>
+        <input type="text" formControlName="PhoneNumber" placeholder="Enter phone number (ex- 0123456789)"
+               [ngClass]="{'is-invalid': isFieldInvalid('PhoneNumber')}" />
+      </label>
+      <div *ngIf="complainantForm.get('PhoneNumber')?.invalid && (complainantForm.get('PhoneNumber')?.touched || complainantForm.get('PhoneNumber')?.dirty)" class="error-msg">
+        <!-- Required validation message -->
+        <div *ngIf="complainantForm.get('PhoneNumber')?.hasError('required')">
+          Phone Number is required.
+        </div>
+        
+        <!-- Pattern validation message -->
+        <div *ngIf="complainantForm.get('PhoneNumber')?.hasError('pattern') && !complainantForm.get('PhoneNumber')?.hasError('required')">
+          Phone Number must contain only digits.
+        </div>
+        
+        <!-- Minlength validation message -->
+        <div *ngIf="complainantForm.get('PhoneNumber')?.hasError('minlength') && !complainantForm.get('PhoneNumber')?.hasError('pattern') && !complainantForm.get('PhoneNumber')?.hasError('required')">
+          Phone Number must be 10 digits long.
+        </div>
+        
+        <!-- Maxlength validation message -->
+        <div *ngIf="complainantForm.get('PhoneNumber')?.hasError('maxlength') && !complainantForm.get('PhoneNumber')?.hasError('pattern') && !complainantForm.get('PhoneNumber')?.hasError('required')">
+          Phone Number must be 10 digits long.
+        </div>
+      </div>
+      
+      
+    </div>
+
+    <label>
+      Nationality:<span class="required">*</span>
+      <input type="text" formControlName="Nationality" placeholder="Nationality"
+             [ngClass]="{'is-invalid': complainantForm.get('Nationality')?.invalid && (complainantForm.get('Nationality')?.touched || complainantForm.get('Nationality')?.dirty)}" />
+    </label>
+    <div *ngIf="complainantForm.get('Nationality')?.invalid && (complainantForm.get('Nationality')?.touched || complainantForm.get('Nationality')?.dirty)" class="error-msg">
+      <!-- Required validation message -->
+      <div *ngIf="complainantForm.get('Nationality')?.hasError('required')">
+        Nationality is required.
+      </div>
+      <!-- Pattern validation message -->
+      <div *ngIf="complainantForm.get('Nationality')?.hasError('pattern') && !complainantForm.get('Nationality')?.hasError('required')">
+        Nationality  must contain only characters.
+      </div>
+    </div>
+
+    <div class="form-row">
+      <label>
+        Permanent Address:<span class="required">*</span>
+        <input type="text" formControlName="PermanentAddress" placeholder="Enter permanent address (ex- AptNo,Aptname,123 Street,city,state,country,pincode)"
+               [ngClass]="{'is-invalid': complainantForm.get('PermanentAddress')?.invalid && (complainantForm.get('PermanentAddress')?.touched || complainantForm.get('PermanentAddress')?.dirty)}" />
+      </label>
+      <div *ngIf="complainantForm.get('PermanentAddress')?.invalid && (complainantForm.get('PermanentAddress')?.touched || complainantForm.get('PermanentAddress')?.dirty)" class="error-msg">
+        Permanent Address is required
+      </div>
+
+      <label>
+        Temporary Address:<span class="required">*</span>
+        <input type="text" formControlName="TemporaryAddress" placeholder="Enter temporary address  (ex- AptNo,Aptname,123 Street,city,state,country,pincode)"
+               [ngClass]="{'is-invalid': complainantForm.get('TemporaryAddress')?.invalid && (complainantForm.get('TemporaryAddress')?.touched || complainantForm.get('TemporaryAddress')?.dirty)}" />
+      </label>
+      <div *ngIf="complainantForm.get('TemporaryAddress')?.invalid && (complainantForm.get('TemporaryAddress')?.touched || complainantForm.get('TemporaryAddress')?.dirty)" class="error-msg">
+        Temporary Address is required
+      </div>
+    
+
+    </div>
+
+    <div class="form-row">
+       
+      <label>
+        Unique Identity Number(Adharcard No):<span class="required">*</span>
+        <input type="number" formControlName="UIDNo" placeholder="Enter unique identity number (ex- 1234 5678 9012)"
+               [ngClass]="{'is-invalid': complainantForm.get('UIDNo')?.invalid && (complainantForm.get('UIDNo')?.touched || complainantForm.get('UIDNo')?.dirty)}" />
+      </label>
+      <div *ngIf="complainantForm.get('UIDNo')?.invalid && (complainantForm.get('UIDNo')?.touched || complainantForm.get('UIDNo')?.dirty)" class="error-msg">
+        UID No is required
+      </div>
+
+      <label>
+        Passport Number: 
+        <input type="number" formControlName="PassportNo" placeholder="Enter passport number (ex- A12345678)" />
+      </label>
+    </div>
+
+    <div class="form-row">
+      <label>
+        Date of issue:
+        <input type="date" formControlName="DateOfIssue" placeholder="dd-mm-yyyy" />
+      </label>
+      <div *ngIf="complainantForm.get('DateOfIssue')?.invalid && (complainantForm.get('DateOfIssue')?.touched || complainantForm.get('DateOfIssue')?.dirty)" class="error-msg">
+        <!-- Custom validation message -->
+        <div *ngIf="complainantForm.get('DateOfIssue')?.hasError('dateNotValid')">
+          Date of issue must be before or today.
+        </div>
+      </div>
+      <label>
+        Place of issue:
+        <input type="text" formControlName="PlaceOfIssue" placeholder="Place of issue (ex- xyz)" />
+      </label>
+    </div>
+    <h3>ID details</h3>
+    <div class="form-row">
+      <label>
+        ID:<span class="required">*</span>
+        <select formControlName="IDType" 
+                [ngClass]="{'is-invalid': complainantForm.get('IDType')?.invalid && (complainantForm.get('IDType')?.touched || complainantForm.get('IDType')?.dirty)}">
+          <option value="">Select ID</option>
+          <option value="RationCard">Ration Card</option>
+          <option value="Passport">Passport</option>
+          <option value="VoterID">Voter ID</option>
+          <option value="PANCard">PAN Card</option>
+        </select>
+      </label>
+      <div *ngIf="complainantForm.get('IDType')?.invalid && (complainantForm.get('IDType')?.touched || complainantForm.get('IDType')?.dirty)" class="error-msg">
+        ID type is required
+      </div>
+   
+      <label>
+        ID Number:<span class="required">*</span>
+        <input type="number" formControlName="IDNumber" placeholder="Enter id number (ex- 123456789)"
+               [ngClass]="{'is-invalid': complainantForm.get('IDNumber')?.invalid && (complainantForm.get('IDNumber')?.touched || complainantForm.get('IDNumber')?.dirty)}" />
+      </label>
+      <div *ngIf="complainantForm.get('IDNumber')?.invalid && (complainantForm.get('IDNumber')?.touched || complainantForm.get('IDNumber')?.dirty)" class="error-msg">
+        ID Number is required
+      </div>
+    </div>
+
+    <div class="form-row">
+      <label>
+        Occupation:<span class="required">*</span>
+        <input type="text" formControlName="Occupation" placeholder="Enter occupation (ex- xyz)"
+               [ngClass]="{'is-invalid': complainantForm.get('Occupation')?.invalid && (complainantForm.get('Occupation')?.touched || complainantForm.get('Occupation')?.dirty)}" />
+      </label>
+      <!-- <div *ngIf="complainantForm.get('Occupation')?.invalid && (complainantForm.get('Occupation')?.touched || complainantForm.get('Occupation')?.dirty)" class="error-msg">
+        Occupation is required
+      </div> -->
+      <div *ngIf="complainantForm.get('Occupation')?.invalid && (complainantForm.get('Occupation')?.touched || complainantForm.get('Occupation')?.dirty)" class="error-msg">
+        <!-- Required validation message -->
+        <div *ngIf="complainantForm.get('Occupation')?.hasError('required')">
+          Occupation is required.
+        </div>
+        <!-- Pattern validation message -->
+        <div *ngIf="complainantForm.get('Occupation')?.hasError('pattern') && !complainantForm.get('Occupation')?.hasError('required')">
+          Occupation must contain only characters.
+        </div>
+      </div>
+
+    </div>
+
+    <h3>Property of Interest:</h3>
+
+    <div class="form-row">
+      <label>
+        Property Category:
+        <select formControlName="PropertyCategory">
+          <option value="">Select Property Category</option>
+          <option value="RationCard">Ration Card</option>
+          <option value="Passport">Passport</option>
+          <option value="VoterID">Voter ID</option>
+          <option value="PANCard">PAN Card</option>
+        </select>
+      </label>
+
+      <label>
+        Property Type:
+        <select formControlName="PropertyType">
+          <option value="">Select Property Type</option>
+          <option value="RationCard">Ration Card</option>
+          <option value="Passport">Passport</option>
+          <option value="VoterID">Voter ID</option>
+          <option value="PANCard">PAN Card</option>
+        </select>
+      </label>
+    </div>
+
+    <label>
+      Description of property:
+      <input type="text" formControlName="DescriptionOfProperty" placeholder="Enter description of property (ex- xyz)" />
+    </label>
+
+    <label>
+      Total value of property (In Rs):
+      <input type="number" formControlName="TotleValueOfProperty" placeholder="Enter total value of property (ex- 100)" />
+    </label>
+  </div>
+
+  <div class="occurrence-details">
+    <h1>Occurrence of Offence:</h1>
+    <hr />
+
+    <div class="form-row">
+      <label>
+        Occurence Day:
+        <input type="date" formControlName="OccurenceDay" />
+      </label>
+      <div *ngIf="complainantForm.get('OccurenceDay')?.invalid && (complainantForm.get('OccurenceDay')?.touched || complainantForm.get('OccurenceDay')?.dirty)" class="error-msg">
+        <!-- Custom validation message -->
+        <div *ngIf="complainantForm.get('OccurenceDay')?.hasError('dateNotValid')">
+          Occurence day must be before or today.
+        </div>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <label>
+        Occurence Date From:
+        <input type="date" formControlName="OccurenceDateFrom" />
+      </label>
+      <div *ngIf="complainantForm.get('OccurenceDateFrom')?.invalid && (complainantForm.get('OccurenceDateFrom')?.touched || complainantForm.get('OccurenceDateFrom')?.dirty)" class="error-msg">
+        <!-- Custom validation message -->
+        <div *ngIf="complainantForm.get('OccurenceDateFrom')?.hasError('dateNotValid')">
+          Occurence Date From must be before or today.
+        </div>
+      </div>
+
+      <label>
+        Occurence Date To:
+        <input type="date" formControlName="OccurenceDateTo" />
+      </label>
+      <div *ngIf="complainantForm.hasError('invalidOccurrenceDate') && complainantForm.touched" class="error-msg">
+        "Occurrence Date To" must be the same or after "Occurrence Date From" and before today.
+      </div>
+      
+
+    </div>
+
+    <label>
+      Occurence Time Period:
+      <input type="time" formControlName="OccurenceTimePeriod" />
+    </label>
+
+    <div class="form-row">
+      <label>
+        Occurence Time From:
+        <input type="time" formControlName="OccurenceTimeFrom" />
+      </label>
+
+      <label>
+        Occurence Time To:
+        <input type="time" formControlName="OccurenceTimeTo" />
+      </label>
+    </div>
+
+    <div class="form-row">
+      <label>
+        Occurence Date:
+        <input type="date" formControlName="OccurenceDate" />
+      </label>
+      <div *ngIf="complainantForm.get('OccurenceDate')?.invalid && (complainantForm.get('OccurenceDate')?.touched || complainantForm.get('OccurenceDate')?.dirty)" class="error-msg">
+        <!-- Custom validation message -->
+        <div *ngIf="complainantForm.get('OccurenceDate')?.hasError('dateNotValid')">
+          Occurence Date must be before or today.
+        </div>
+      </div>
+
+      <label>
+        Occurence Time:
+        <input type="time" formControlName="OccurenceTime" />
+      </label>
+    </div>
+
+    <div class="form-row">
+      <label>
+        Occurence:
+        <input type="text" formControlName="Occurence" placeholder="Enter Occurence" />
+      </label>
+
+      <label>
+        Accused:
+        <input type="text" formControlName="Accused" placeholder="Enter Accused" />
+      </label>
+    </div>
+
+    <label>
+        First Information Content:
+        <input type="text" formControlName="FirstInformationcontent" placeholder="Enter first information content (ex- xyz)" />
+      </label>
+
+    <label>
+      Reason of Delay in reporting:
+      <input type="text" formControlName="ReasonOfDelay" placeholder="Enter reason of delay in reporting (ex- xyz)" />
+    </label>
+  </div>
+
+  <button>Submit</button>
+</form>

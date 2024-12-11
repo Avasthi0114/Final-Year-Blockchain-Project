@@ -1,0 +1,37 @@
+<h1 class="heading">Login</h1>
+<form [formGroup]="LoginForm" (ngSubmit)="login()">
+    <div class="form-row"> 
+      <label>
+        Email:<span class="required">*</span>  
+        <input type="email" formControlName="Email"  placeholder="Enter email"
+               [ngClass]="{'is-invalid': LoginForm.get('Email')?.invalid && (LoginForm.get('Email')?.touched ||  LoginForm.get('Email')?.dirty)}" />
+      </label>
+      <div *ngIf=" LoginForm.get('Email')?.invalid && ( LoginForm.get('Email')?.touched ||  LoginForm.get('Email')?.dirty)" class="error-msg">
+        Email is required
+      </div>
+    
+        
+      <label>
+        Password:<span class="required">*</span> 
+        <input type="password" formControlName="password" placeholder="Enter password"
+               [ngClass]="{'is-invalid': LoginForm.get('password')?.invalid && (LoginForm.get('password')?.touched ||  LoginForm.get('password')?.dirty)}" />
+      </label>
+      <div *ngIf=" LoginForm.get('password')?.invalid && ( LoginForm.get('password')?.touched ||  LoginForm.get('password')?.dirty)" class="error-msg">
+        password is required
+      </div>
+      <div *ngIf="errorMessage" class="notification error">
+        {{ errorMessage }}
+      </div>
+
+      
+    </div>
+    
+  
+  
+    <div class="button-row"> 
+      <button type="submit" >Login</button>
+      <button type="button"  (click)="navigateToSignUp()">Sign up</button>
+      <!-- <button type="submit" (click)="login()">Login</button>
+      <button type="button" (click)="navigateToSignUp()">Sign up</button> -->
+    </div>
+  </form>

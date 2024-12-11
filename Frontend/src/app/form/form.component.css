@@ -1,0 +1,145 @@
+
+  /* Top Menu styles */
+  .top-menu {
+    display: flex;
+    justify-content: space-around;
+    background-color: #4cc1e9;
+    padding: 3px;
+  }
+  
+  .top-menu button {
+    background-color: #8bc34a;
+    border-radius: 5px;
+    border-color: #4cc1e9 ;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    padding: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+  
+  .top-menu button:hover {
+     background-color: #d60b0b;
+  }
+ 
+ 
+ /* Overall Form Styling */
+form {
+  width: 80%;
+  /* max-width: 900px; */
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  font-family: Arial, sans-serif;
+}
+
+.heading{
+  padding-left: 38%;
+  font-size: 40px;
+  color: black;
+  font-family: Arial, sans-serif;
+}
+
+/* Headings */
+h1, h3 {
+  margin-bottom: 10px;
+  color: #333;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+/* Horizontal Rule */
+hr {
+  margin: 10px 0;
+  border: none;
+  border-top: 2px solid #ccc;
+}
+
+/* Input and Select Fields */
+input, select {
+  width: 100%;
+  padding: 8px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+  margin-top: 5px;
+  background-color: #fff;
+}
+
+/* Form Layout */
+.form-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+label {
+  flex: 1;
+  font-weight: bold;
+  color: #020000;
+}
+
+/* Labels for Single Inputs (outside form-row) */
+label input, label select {
+  width: 100%;
+}
+
+/* Align the Single Input Labels */
+label {
+  display: block;
+  margin-bottom: 10px;
+}
+
+/* Styling for Buttons */
+button {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+  display: block;
+  margin: 20px auto;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+.is-invalid {
+  border: 2px solid red;
+}
+
+/* Style error messages */
+.error-msg {
+  color: red;
+  font-size: 12px;
+  margin-top: 5px;
+}
+
+.required {
+  color: red;
+  font-size: 14px;
+}
+
+
+/* Responsive Design for Mobile */
+@media (max-width: 768px) {
+  .form-row {
+      flex-direction: column;
+  }
+  
+  input, select {
+      width: 100%;
+  }
+}
+
+ 
