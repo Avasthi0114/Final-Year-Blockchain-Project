@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IPFS Folder Management</title>
+    <link rel="stylesheet" href="style.css">
+    <script defer src="routing.js"></script>
+    <script defer src="functions.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>IPFS Folder Management</h1>
+
+        <!-- Upload Form -->
+        <form action="/upload" method="POST" enctype="multipart/form-data" id="uploadForm">
+            <input type="file" name="files" multiple />
+            <button type="submit">Upload</button>
+        </form>
+        <div id="uploadResult"></div>
+
+        <!-- Retrieve Folder -->
+        <h2>Retrieve Folder Contents</h2>
+        <form id="retrieveForm">
+            <input type="text" id="folderCIDInput" placeholder="Enter Folder CID" />
+            <button type="submit">Retrieve Files</button>
+        </form>
+        <div id="folderContents"></div>
+
+        <!-- Update Folder -->
+        <h2>Update Form</h2>
+         <!-- Your form and content here -->
+        <form id="updateFolderForm">
+            <input type="text" name="existingFolderCID" id="existingFolderCIDInput" placeholder="Enter Existing Folder CID" required>
+            <input type="file" name="files" multiple />
+            <button type="submit">Update Folder</button>
+        </form>
+
+        <!-- This is where the result will be displayed -->
+        <div id="updatedFolderResult"></div> 
+
+    </div>
+</body>
+</html>
