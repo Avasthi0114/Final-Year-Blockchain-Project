@@ -1,0 +1,106 @@
+ /* Overall Form Styling */
+ form {
+    max-width: 400px; /* Maximum width for the form */
+    margin: 40px auto; /* Centers the form horizontally */
+    padding: 20px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    font-family: Arial, sans-serif;
+}
+
+.heading{
+  padding-left: 38%;
+  font-size: 40px;
+  color: black;
+  font-family: Arial, sans-serif;
+}
+  
+  
+  /* Input and Select Fields */
+  input,
+  select {
+    width: 100%; /* Full-width inputs */
+    padding: 10px; /* Comfortable padding */
+    font-size: 14px; /* Readable text size */
+    border: 1px solid #ccc; /* Subtle border */
+    border-radius: 5px; /* Rounded corners */
+    box-sizing: border-box;
+    margin-top: 5px; /* Space above inputs */
+    background-color: #fff; /* White background */
+  }
+  
+  /* Form Layout */
+  .form-row {
+    display: flex;
+    justify-content: space-between; /* Space between fields */
+    gap: 20px; /* Spacing between inputs */
+    margin-bottom: 20px; /* Space below row */
+  }
+  
+  label {
+    flex: 1; /* Labels take equal space */
+    font-weight: bold; /* Highlighted labels */
+    color: #020000; /* Neutral color for text */
+  }
+  
+  /* Labels for Single Inputs (outside form-row) */
+  label input,
+  label select {
+    width: 100%; /* Full-width input inside label */
+  }
+  
+  /* Align the Single Input Labels */
+  label {
+    display: block;
+    margin-bottom: 10px; /* Space below label */
+  }
+  
+  /* Styling for Buttons */
+  button {
+    padding: 10px 20px;
+    background-color: #007bff; /* Primary button color */
+    color: white; /* White text */
+    border: none;
+    border-radius: 5px; /* Rounded button */
+    cursor: pointer; /* Pointer on hover */
+    font-size: 16px; /* Readable font size */
+    transition: background-color 0.3s ease; /* Smooth hover effect */
+    display: block;
+    margin: 20px auto; /* Centered button */
+  }
+  
+  button:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+  }
+  
+  .is-invalid {
+    border: 2px solid red;
+  }
+  
+  /* Style error messages */
+  .error-msg {
+    color: red;
+    font-size: 12px;
+    margin-top: 5px;
+  }
+  
+  .required {
+    color: red;
+    font-size: 14px;
+  }
+   
+ 
+  /* Responsive Design for Mobile */
+  @media (max-width: 768px) {
+    .form-row {
+      flex-direction: column; /* Stack fields vertically on small screens */
+    }
+  
+    input,
+    select {
+      width: 100%; /* Full width for smaller screens */
+    }
+  }
+  

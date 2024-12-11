@@ -1,0 +1,101 @@
+<form  [formGroup]="SignUpForm" (ngSubmit)="SignUp()">
+    <div class="form-group">
+        <label>
+            Name:<span class="required">*</span>
+            <input type="text" formControlName="Name" placeholder="Enter name (ex- xyz)" >
+        </label>
+        <div *ngIf="SignUpForm.get('Name')?.invalid && (SignUpForm.get('Name')?.touched || SignUpForm.get('Name')?.dirty)" class="error-msg">
+            <!-- Required validation message -->
+            <div *ngIf="SignUpForm.get('Name')?.hasError('required')">
+              Name is required.
+            </div>
+            <!-- Pattern validation message -->
+            <div *ngIf="SignUpForm.get('Name')?.hasError('pattern') && !SignUpForm.get('Name')?.hasError('required')">
+              Name must contain only characters.
+            </div>
+          </div>
+    </div>
+    <div class="form-group">
+        <label>
+            Email:<span class="required">*</span>
+            <input type="email" formControlName="Email" placeholder="Enter email (ex- xyz@gmail.com)" >
+        </label>
+        <div *ngIf="SignUpForm.get('Email')?.invalid && (SignUpForm.get('Email')?.touched || SignUpForm.get('Email')?.dirty)" class="error-msg">
+          <!-- Required validation message -->
+          <div *ngIf="SignUpForm.get('Email')?.hasError('required')">
+              Email is required.
+          </div>
+        </div>
+    </div>
+    <div class="form-group"> 
+        <label>
+            PhoneNumber:<span class="required">*</span>
+            <input type="text" formControlName="PhoneNumber" placeholder="Enter phone number (ex- 0123456789)" >
+        </label>
+        <div *ngIf="SignUpForm.get('PhoneNumber')?.invalid && (SignUpForm.get('PhoneNumber')?.touched || SignUpForm.get('PhoneNumber')?.dirty)" class="error-msg">
+            <!-- Required validation message -->
+            <div *ngIf="SignUpForm.get('PhoneNumber')?.hasError('required')">
+              Phone Number is required.
+            </div>
+            
+            <!-- Pattern validation message -->
+            <div *ngIf="SignUpForm.get('PhoneNumber')?.hasError('pattern') && !SignUpForm.get('PhoneNumber')?.hasError('required')">
+              Phone Number must contain only digits.
+            </div>
+            
+            <!-- Minlength validation message -->
+            <div *ngIf="SignUpForm.get('PhoneNumber')?.hasError('minlength') && !SignUpForm.get('PhoneNumber')?.hasError('pattern') && !SignUpForm.get('PhoneNumber')?.hasError('required')">
+              Phone Number must be 10 digits long.
+            </div>
+            
+            <!-- Maxlength validation message -->
+            <div *ngIf="SignUpForm.get('PhoneNumber')?.hasError('maxlength') && !SignUpForm.get('PhoneNumber')?.hasError('pattern') && !SignUpForm.get('PhoneNumber')?.hasError('required')">
+              Phone Number must be 10 digits long.
+            </div>
+            </div>
+    </div>
+        <div class="form-group">
+        <!-- <label>
+            Password:<span class="required">*</span>
+            <input type="password" formControlName="password" placeholder="Enter Password">
+        </label>
+        <div *ngIf="SignUpForm.get('password')?.invalid && (SignUpForm.get('password')?.touched || SignUpForm.get('password')?.dirty)" class="error-msg">
+          
+          <div *ngIf="SignUpForm.get('password')?.hasError('required')">
+            password is required.
+          </div>
+        </div> -->
+        <label>
+          Password:<span class="required">*</span>
+          <input 
+            type="password" 
+            formControlName="password" 
+            placeholder="Enter password (ex- Xy123@ab)"
+            [ngClass]="{
+              'is-invalid': SignUpForm.get('password')?.invalid && 
+                            (SignUpForm.get('password')?.touched || SignUpForm.get('password')?.dirty)
+            }" 
+          />
+        </label>
+        <div *ngIf="SignUpForm.get('password')?.touched || SignUpForm.get('password')?.dirty" class="error-msg">
+          <div *ngIf="SignUpForm.get('password')?.hasError('required')">Password is required</div>
+          <div *ngIf="SignUpForm.get('password')?.hasError('minlength')">
+            Password must be at least 8 characters long
+          </div>
+          <div *ngIf="SignUpForm.get('password')?.hasError('pattern')">
+            Password must include:
+            
+              <li>At least one uppercase letter</li>
+              <li>At least one lowercase letter</li>
+              <li>At least one digit</li>
+              <li>At least one special character</li>
+            
+          </div>
+        </div>
+        
+    </div>
+    <div class="signup-btn">
+        <button>Sign up</button>
+    </div>
+    
+ </form>

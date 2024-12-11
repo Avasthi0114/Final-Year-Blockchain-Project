@@ -1,0 +1,137 @@
+<h1 class="heading">Police signup</h1>
+<form  [formGroup]="PoliceSignUpForm" (ngSubmit)="SignUp()">
+    <div class="form-group">
+        <label>
+            Name:<span class="required">*</span>
+            <input type="text" formControlName="Name" placeholder="Enter name (ex- xyz)">
+        </label>
+        <div *ngIf="PoliceSignUpForm.get('Name')?.invalid && (PoliceSignUpForm.get('Name')?.touched || PoliceSignUpForm.get('Name')?.dirty)" class="error-msg">
+            <!-- Required validation message -->
+            <div *ngIf="PoliceSignUpForm.get('Name')?.hasError('required')">
+              Name is required.
+            </div>
+            <!-- Pattern validation message -->
+            <div *ngIf="PoliceSignUpForm.get('Name')?.hasError('pattern') && !PoliceSignUpForm.get('Name')?.hasError('required')">
+              Name must contain only characters.
+            </div>
+          </div>
+    </div>
+    <div class="form-group">
+        <label>
+            Email:<span class="required">*</span>
+            <input type="email" formControlName="Email" placeholder="Enter email (ex- xyz@gmail.com)">
+        </label>
+        <div *ngIf="PoliceSignUpForm.get('Email')?.invalid && (PoliceSignUpForm.get('Email')?.touched || PoliceSignUpForm.get('Email')?.dirty)" class="error-msg">
+            <!-- Required validation message -->
+            <div *ngIf="PoliceSignUpForm.get('Email')?.hasError('required')">
+                Email is required.
+            </div>
+          </div>
+    </div>
+    <div class="form-group"> 
+        <label>
+            Phone Number:<span class="required">*</span>
+            <input type="text" formControlName="PhoneNumber" placeholder="Enter phone number (ex- 0123456789) " >
+        </label>
+        <div *ngIf="PoliceSignUpForm.get('PhoneNumber')?.invalid && (PoliceSignUpForm.get('PhoneNumber')?.touched || PoliceSignUpForm.get('PhoneNumber')?.dirty)" class="error-msg">
+            <!-- Required validation message -->
+            <div *ngIf="PoliceSignUpForm.get('PhoneNumber')?.hasError('required')">
+              Phone Number is required.
+            </div>
+            
+            <!-- Pattern validation message -->
+            <div *ngIf="PoliceSignUpForm.get('PhoneNumber')?.hasError('pattern') && !PoliceSignUpForm.get('PhoneNumber')?.hasError('required')">
+              Phone Number must contain only digits.
+            </div>
+            
+            <!-- Minlength validation message -->
+            <div *ngIf="PoliceSignUpForm.get('PhoneNumber')?.hasError('minlength') && !PoliceSignUpForm.get('PhoneNumber')?.hasError('pattern') && !PoliceSignUpForm.get('PhoneNumber')?.hasError('required')">
+              Phone Number must be 10 digits long.
+            </div>
+            
+            <!-- Maxlength validation message -->
+            <div *ngIf="PoliceSignUpForm.get('PhoneNumber')?.hasError('maxlength') && !PoliceSignUpForm.get('PhoneNumber')?.hasError('pattern') && !PoliceSignUpForm.get('PhoneNumber')?.hasError('required')">
+              Phone Number must be 10 digits long.
+            </div>
+            </div>
+    </div>
+    <div class="form-group"> 
+        <label>
+            Police Officer Rank:<span class="required">*</span>
+            <input type="text" formControlName="PoliceOfficerRank" placeholder="Enter police officer rank (ex- xyz)" >
+        </label>
+        <div *ngIf="PoliceSignUpForm.get('PoliceOfficerRank')?.invalid && (PoliceSignUpForm.get('PoliceOfficerRank')?.touched || PoliceSignUpForm.get('PoliceOfficerRank')?.dirty)" class="error-msg">
+            <!-- Required validation message -->
+            <div *ngIf="PoliceSignUpForm.get('PoliceOfficerRank')?.hasError('required')">
+                PoliceOfficerRank is required.
+            </div>
+          </div>
+    </div>
+    <div class="form-group"> 
+        <label>
+            Police Officer Id:<span class="required">*</span>
+            <input type="number" formControlName="PoliceOfficerId" placeholder="Enter police officer id (ex- 123)" >
+        </label>
+        <div *ngIf="PoliceSignUpForm.get('PoliceOfficerId')?.invalid && (PoliceSignUpForm.get('PoliceOfficerId')?.touched || PoliceSignUpForm.get('PoliceOfficerId')?.dirty)" class="error-msg">
+            <!-- Required validation message -->
+            <div *ngIf="PoliceSignUpForm.get('PoliceOfficerId')?.hasError('required')">
+                PoliceOfficerId is required.
+            </div>
+          </div>
+    </div>
+    <div class="form-group"> 
+        <label>
+            Police Station Id:<span class="required">*</span>
+            <input type="number" formControlName="PoliceStationId" placeholder="Enter police station id (ex-123)" >
+        </label>
+        <div *ngIf="PoliceSignUpForm.get('PoliceStationId')?.invalid && (PoliceSignUpForm.get('PoliceStationId')?.touched || PoliceSignUpForm.get('PoliceStationId')?.dirty)" class="error-msg">
+            <!-- Required validation message -->
+            <div *ngIf="PoliceSignUpForm.get('PoliceStationId')?.hasError('required')">
+                PoliceStationId is required.
+            </div>
+          </div>
+    </div>
+        <div class="form-group">
+        <!-- <label>
+            Password:<span class="required">*</span>
+            <input type="password" formControlName="password" placeholder="Enter Password" >
+        </label>
+        <div *ngIf="PoliceSignUpForm.get('password')?.invalid && (PoliceSignUpForm.get('password')?.touched || PoliceSignUpForm.get('password')?.dirty)" class="error-msg">
+            
+            <div *ngIf="PoliceSignUpForm.get('password')?.hasError('required')">
+                password is required.
+            </div>
+          </div> -->
+          <label>
+            Password:<span class="required">*</span>
+            <input 
+              type="password" 
+              formControlName="password" 
+              placeholder="Enter password (ex- Xy123@ab)"
+              [ngClass]="{
+                'is-invalid': PoliceSignUpForm.get('password')?.invalid && 
+                              (PoliceSignUpForm.get('password')?.touched || PoliceSignUpForm.get('password')?.dirty)
+              }" 
+            />
+          </label>
+          <div *ngIf="PoliceSignUpForm.get('password')?.touched || PoliceSignUpForm.get('password')?.dirty" class="error-msg">
+            <div *ngIf="PoliceSignUpForm.get('password')?.hasError('required')">Password is required</div>
+            <div *ngIf="PoliceSignUpForm.get('password')?.hasError('minlength')">
+              Password must be at least 8 characters long
+            </div>
+            <div *ngIf="PoliceSignUpForm.get('password')?.hasError('pattern')">
+              Password must include:
+              
+                <li>At least one uppercase letter</li>
+                <li>At least one lowercase letter</li>
+                <li>At least one digit</li>
+                <li>At least one special character</li>
+              
+            </div>
+          </div>
+    </div>
+    <div class="signup-btn">
+        <button>Sign up</button>
+    </div>
+    
+ </form>

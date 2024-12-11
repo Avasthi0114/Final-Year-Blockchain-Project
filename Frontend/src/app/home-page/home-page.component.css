@@ -1,0 +1,99 @@
+  
+  
+  /* Top Menu styles */
+  .top-menu {
+    display: flex;
+    justify-content: space-around;
+    background-color: #4cc1e9;
+    padding: 10px;
+  }
+  
+  .top-menu button {
+    background-color: #8bc34a;
+    border-radius: 5px;
+    border-color: #4cc1e9 ;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    padding: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+  
+  .top-menu button:hover {
+     background-color: #d60b0b;
+  }
+  
+  /* Main Content styles */
+  .main-content {
+    display: flex;
+    padding: 20px;
+  }
+  
+  /* .left-panel img, .center-panel img {
+    width: 100%;
+    height: auto;
+  } */
+  
+  /* .left-panel {
+    flex: 1;
+  } */
+  
+  .center-panel {
+    flex: 4;
+    display: flex;
+    justify-content:center;
+     
+  }
+  
+  .right-panel {
+    flex: 1;
+    padding: 10px;
+    background-color: #e3f5e5;
+  }
+  
+  .news-updates h2 {
+    font-size: 20px;
+    color: green;
+  }
+  
+  .news-updates ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .news-updates li {
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 10px;
+  }
+  
+  /* Service Cards styles */
+  .service-cards {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 10px;
+    padding: 20px;
+  }
+/*   
+  .card {
+    padding: 20px;
+    text-align: center;
+    background-color: #f0f0f0;
+    border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    font-weight: bold;
+  }
+  
+  .card:nth-child(1) { background-color: #e91e63; color: white; }
+  .card:nth-child(2) { background-color: #8bc34a; color: white; }
+  .card:nth-child(3) { background-color: #03a9f4; color: white; }
+  .card:nth-child(4) { background-color: #9c27b0; color: white; }
+  .card:nth-child(5) { background-color: #4caf50; color: white; }
+  .card:nth-child(6) { background-color: #673ab7; color: white; }
+  .card:nth-child(7) { background-color: #ff9800; color: white; }
+  .card:nth-child(8) { background-color: #ff5722; color: white; }
+  .card:nth-child(9) { background-color: #00bcd4; color: white; }
+  .card:nth-child(10) { background-color: #ffc107; color: white; }
+  .card:nth-child(11) { background-color: #795548; color: white; }
+   */
