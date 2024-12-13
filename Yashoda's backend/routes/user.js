@@ -2,6 +2,7 @@ const express = require("express");
 const connection = require("../connection");
 const router = express.Router();
 const bcrypt = require('bcrypt');
+const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
 require('dotenv').config();
@@ -12,45 +13,11 @@ let path = require('path');
 var fs = require('fs');
 var uuid = require('uuid');
 
-//here we have created api for POST
-// router.post("/signup", (req, res) => {
-//   let user = req.body;
-//   query = "select Name,Email, UserRole, password from signupdata where email=?";
-//   connection.query(query, [user.Email], (err, results) => {
-//     if (!err) {
-//       if (results.length <= 0) {
-//         query =
-//           "insert into signupdata(Name,Email,UserRole,password) values(?,?,?,?)";
-//         // query = "INSERT INTO user(name, email, contactNumber, password, status) VALUES(?, ?, ?, ?, 'false')";
-//         connection.query(
-//           query,
-//           [user.Name, user.Email, user.UserRole, user.password],
-//           (err, results) => {
-//             if (!err) {
-//               return res
-//                 .status(200)
-//                 .json({ message: "successfully registered" });
-//             } else {
-//               return res.status(500).json(err);
-//             }
-//           }
-//         );
-//       } else {
-//         return res.status(400).json({ message: "email already exits" });
-//       }
-//     } else {
-//       return res.status(500).json(err);
-//     }
-//   });
-// });
-
- 
-
-// router.post("/signup", async (req, res) => {
+// router.post("/SignUpComplainant", async (req, res) => {
 //   let user = req.body;
 
 //   // Check if the user already exists
-//   const query = "SELECT Name, Email, UserRole, password FROM signupdata WHERE Email=?";
+//   const query = "SELECT Name, Email, PhoneNumber, password FROM complainantdata WHERE Email=?";
 //   connection.query(query, [user.Email], async (err, results) => {
 //     if (!err) {
 //       if (results.length <= 0) {
@@ -60,13 +27,13 @@ var uuid = require('uuid');
 //           const hashedPassword = await bcrypt.hash(user.password, saltRounds);
 
 //           // Insert the new user into the database
-//           const insertQuery = "INSERT INTO signupdata(Name, Email, UserRole, password) VALUES(?, ?, ?, ?)";
+//           const insertQuery = "INSERT INTO complainantdata(Name, Email, PhoneNumber, password) VALUES(?, ?, ?, ?)";
 //           connection.query(
 //             insertQuery,
-//             [user.Name, user.Email, user.UserRole, hashedPassword],
+//             [user.Name, user.Email, user.PhoneNumber, hashedPassword],
 //             (err, results) => {
 //               if (!err) {
-//                 return res.status(200).json({ message: "Successfully registered" });
+//                 return res.status(200).json({ message: "Successfully complainant registered" });
 //               } else {
 //                 return res.status(500).json(err);
 //               }
@@ -84,18 +51,22 @@ var uuid = require('uuid');
 //   });
 // });
 
+ 
+
 router.post("/SignUpComplainant", async (req, res) => {
   let user = req.body;
 
   // Check if the user already exists
   const query = "SELECT Name, Email, PhoneNumber, password FROM complainantdata WHERE Email=?";
-  connection.query(query, [user.Email], async (err, results) => {
+  connection.query(query, [user.Email], (err, results) => {
     if (!err) {
       if (results.length <= 0) {
         try {
-          // Hash the password
-          const saltRounds = 10;
-          const hashedPassword = await bcrypt.hash(user.password, saltRounds);
+          // Hash the password using SHA-256
+          const hashedPassword = crypto
+            .createHash("sha256")
+            .update(user.password)
+            .digest("hex");
 
           // Insert the new user into the database
           const insertQuery = "INSERT INTO complainantdata(Name, Email, PhoneNumber, password) VALUES(?, ?, ?, ?)";
@@ -122,6 +93,7 @@ router.post("/SignUpComplainant", async (req, res) => {
   });
 });
 
+
 router.post("/SignUpPoliceOfficer", async (req, res) => {
   let user = req.body;
 
@@ -132,8 +104,10 @@ router.post("/SignUpPoliceOfficer", async (req, res) => {
       if (results.length <= 0) {
         try {
           // Hash the password
-          const saltRounds = 10;
-          const hashedPassword = await bcrypt.hash(user.password, saltRounds);
+          const hashedPassword = crypto
+          .createHash("sha256")
+          .update(user.password)
+          .digest("hex");
 
           // Insert the new user into the database
           const insertQuery = "INSERT INTO policedata(Name, Email, PhoneNumber, PoliceOfficerRank, PoliceOfficerId, PoliceStationId, password) VALUES(?, ?, ?, ?,?,?,?)";
@@ -189,10 +163,34 @@ router.post("/SignUpPoliceOfficer", async (req, res) => {
 
  
 
-router.post("/login", (req, res) => {
+// router.post("/login", (req, res) => {
+//   const user = req.body;
+
+//   const query = "SELECT Name,password FROM signupdata WHERE Email=?";
+//   connection.query(query, [user.Email], async (err, results) => {
+//     if (!err) {
+//       if (results.length <= 0) {
+//         return res.status(401).json({ message: "Incorrect username or password" });
+//       } else {
+//         const dbPassword = results[0].password;
+//         // Compare the hashed password
+//         const passwordMatch = await bcrypt.compare(user.password, dbPassword);
+//         if (passwordMatch) {
+//           return res.status(200).json({ message: "Successfully logged in" });
+//         } else {
+//           return res.status(401).json({ message: "Incorrect username or password" });
+//         }
+//       }
+//     } else {
+//       return res.status(500).json(err);
+//     }
+//   });
+// });
+
+router.post("/loginComplainant", (req, res) => {
   const user = req.body;
 
-  const query = "SELECT Name,password FROM signupdata WHERE Email=?";
+  const query = "SELECT Email,password FROM complainantdata WHERE Email=?";
   connection.query(query, [user.Email], async (err, results) => {
     if (!err) {
       if (results.length <= 0) {
@@ -200,11 +198,43 @@ router.post("/login", (req, res) => {
       } else {
         const dbPassword = results[0].password;
         // Compare the hashed password
-        const passwordMatch = await bcrypt.compare(user.password, dbPassword);
-        if (passwordMatch) {
+        const hashedPassword = crypto
+        .createHash("sha256")
+        .update(user.password)
+        .digest("hex");
+
+        if  (hashedPassword === dbPassword) {
           return res.status(200).json({ message: "Successfully logged in" });
-        } else {
-          return res.status(401).json({ message: "Incorrect username or password" });
+        } else  {
+          return res.status(402).json({ message: "Incorrect password" });
+        }
+      }
+    } else {
+      return res.status(500).json(err);
+    }
+  });
+});
+
+router.post("/loginPolice", (req, res) => {
+  const user = req.body;
+
+  const query = "SELECT Email,password FROM policedata WHERE Email=?";
+  connection.query(query, [user.Email], async (err, results) => {
+    if (!err) {
+      if (results.length <= 0) {
+        return res.status(401).json({ message: "Incorrect username or password" });
+      } else {
+        const dbPassword = results[0].password;
+        // Compare the hashed password
+        const hashedPassword = crypto
+        .createHash("sha256")
+        .update(user.password)
+        .digest("hex");
+
+        if  (hashedPassword === dbPassword) {
+          return res.status(200).json({ message: "Successfully logged in" });
+        } else  {
+          return res.status(402).json({ message: "Incorrect password" });
         }
       }
     } else {
@@ -223,14 +253,14 @@ router.post("/form", (req, res) => {
       if (!err) {
           if (results.length <= 0) {
               // Insert new user without email
-              query = "INSERT INTO user(UserName, FatherOrHusbandName, DateOfBirth, PhoneNumber, Nationality, PermanentAddress, TemporaryAddress, UIDNo, PassportNo, DateOfIssue, PlaceOfIssue, IDType, IDNumber, Occupation, PropertyCategory, PropertyType, DescriptionOfProperty, TotleValueOfProperty, ValueOfProperty, OccurenceDay, OccurenceDateFrom, OccurenceDateTo, OccurenceTimePeriod, OccurenceTimeFrom, OccurenceTimeTo, OccurenceDate, OccurenceTime, Occurence, Accused, FirstInformationcontent, ReasonOfDelay) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?)";
+              query = "INSERT INTO user(UserName, FatherOrHusbandName, DateOfBirth , Nationality,PhoneNumber, PermanentAddress, TemporaryAddress, UIDNo, PassportNo, DateOfIssue, PlaceOfIssue, IDType, IDNumber, Occupation, PropertyCategory, PropertyType, DescriptionOfProperty, TotleValueOfProperty, ValueOfProperty, OccurenceDay, OccurenceDateFrom, OccurenceDateTo, OccurenceTimePeriod, OccurenceTimeFrom, OccurenceTimeTo, OccurenceDate, OccurenceTime, Occurence, Accused, FirstInformationcontent, ReasonOfDelay,complainantemail) VALUES(?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?)";
 
               connection.query(query, [
                   user.UserName,
                   user.FatherOrHusbandName,
                   user.DateOfBirth,
-                  user.PhoneNumber,
                   user.Nationality,
+                  user.PhoneNumber,
                   user.PermanentAddress,
                   user.TemporaryAddress,
                   user.UIDNo,
@@ -256,7 +286,8 @@ router.post("/form", (req, res) => {
                   user.Occurence,
                   user.Accused,
                   user.FirstInformationcontent,
-                  user.ReasonOfDelay
+                  user.ReasonOfDelay,
+                  user.complainantemail,
               ], (err, results) => {
                   if (!err) {
                       return res.status(200).json({ message: "Successfully added" });
@@ -355,8 +386,9 @@ router.post('/generatereport', (req, res) => {
       UserName: userDetails.UserName,
       FatherOrHusbandName: userDetails.FatherOrHusbandName,
       DateOfBirth: userDetails.DateOfBirth,
-      PhoneNumber: userDetails.PhoneNumber,
+      complainantemail: userDetails.complainantemail,
       Nationality: userDetails.Nationality,
+      PhoneNumber: userDetails.PhoneNumber,
       PermanentAddress: userDetails.PermanentAddress,
       TemporaryAddress: userDetails.TemporaryAddress,
       UIDNo: userDetails.UIDNo,

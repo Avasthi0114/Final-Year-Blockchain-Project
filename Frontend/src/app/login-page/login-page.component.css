@@ -1,7 +1,7 @@
   /* General Styles for the Form */
 form {
     max-width: 450px; /* Maximum width for the form */
-    margin: 90px auto; /* Centers the form horizontally */
+    margin: 170px auto; /* Centers the form horizontally */
     padding: 20px;
     background-color: #f9f9f9;
     border: 1px solid #ddd;

@@ -1,0 +1,59 @@
+
+
+  /* Top Menu styles */
+  .form-top-menu {
+    display: flex;
+    justify-content: space-around;
+    background-color: #4cc1e9;
+    /* padding: 3px; */
+    position: fixed;
+    margin-top: 76px;
+    width: 100%;
+    height: 60px;
+    left:0;
+    
+  }
+  
+  .form-top-menu button {
+    background-color: #8bc34a;
+    border-radius: 5px;
+    border-color: #4cc1e9 ;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    padding: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+  
+  .form-top-menu button:hover {
+     background-color: #d60b0b;
+  }
+ 
+ /* left navbar styles */
+ .navbar {
+    height: 100vh;  
+    width: 250px;  
+    position: fixed;  
+    top: 144px;
+    left: 0;
+    background-color:  #ebe5e5;  
+    padding-top: 20px;  
+  }
+  
+   
+  
+  .navbar a {
+    color: rgb(0, 0, 0);
+    text-decoration: none;
+    display: block;
+    transition: 0.3s;
+  }
+  
+  .navbar a:hover {
+    color: #ffffff;
+  }
+   
+  
