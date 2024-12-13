@@ -91,16 +91,22 @@ export class FormComponent {
         Validators.required,
         dateBeforeTodayValidator
       ]),
-      PhoneNumber: new FormControl('',[
-      Validators.required,
-      Validators.minLength(10),
-      Validators.maxLength(10),
-      Validators.pattern('^[0-9]*$') // Only numbers allowed
-      ]),
+      complainantemail: new FormControl('',[
+        Validators.required,
+        // Validators.minLength(10),
+        // Validators.maxLength(10),
+        // Validators.pattern('^[0-9]*$')  
+        ]),  
       Nationality: new FormControl('Indian',[
         Validators.required,
         Validators.pattern('^[a-zA-Z]*$')
       ]),
+      PhoneNumber: new FormControl('',[
+        Validators.required,
+        // Validators.minLength(10),
+        // Validators.maxLength(10),
+        // Validators.pattern('^[0-9]*$')  
+        ]), 
       PermanentAddress: new FormControl('',[
         Validators.required
       ]),
@@ -152,7 +158,7 @@ export class FormComponent {
       Occurence: new FormControl(''),
       Accused: new FormControl(''),
       FirstInformationcontent: new FormControl(''),
-      ReasonOfDelay: new FormControl('')    
+      ReasonOfDelay: new FormControl('')  ,
   }, { validators: occurrenceDateValidator() });
 
   ngOnInit() {
@@ -186,8 +192,8 @@ export class FormComponent {
     UserName: formData.UserName,
     FatherOrHusbandName: formData.FatherOrHusbandName, 
     DateOfBirth: formData.DateOfBirth,
-    PhoneNumber: formData.PhoneNumber,
     Nationality: formData.Nationality,
+    PhoneNumber: formData.PhoneNumber,
     PermanentAddress: formData.PermanentAddress,
     TemporaryAddress: formData.TemporaryAddress,
     UIDNo: formData.UIDNo,
@@ -213,7 +219,8 @@ export class FormComponent {
     Occurence: formData.Occurence || null,
     Accused: formData.Accused || null,
     FirstInformationcontent: formData.FirstInformationcontent || null,
-    ReasonOfDelay: formData.ReasonOfDelay || null
+    ReasonOfDelay: formData.ReasonOfDelay || null,
+    complainantemail: formData.complainantemail,
   };
 
   // Generate PDF and handle response

@@ -1,11 +1,19 @@
-<div class="top-menu">
+<div class="form-top-menu">
   <button>Home</button>
   <button>About Us</button>
-  <button   routerLink="">Sign out</button>
-   
-  <!-- <button>e-FIR</button> -->
+  <button routerLink="">Sign out</button>
 </div>
 
+<div class="navbar">
+  <ul>
+    <button routerLink="/eFIR">Home</button>
+    <button routerLink="/eFIR">Register complaint</button>
+    <button routerLink="/eFIR">View complaint</button>
+    <!-- <button routerLink="/eFIR">Register complaint</button> -->
+  </ul>
+</div>
+
+<div class="content"> 
 <h1 class="heading">Complainant form</h1>
 <form [formGroup]="complainantForm" (ngSubmit)="submitAction()">
   <div class="personal-details">
@@ -67,35 +75,36 @@
       </div>
 
       <label>
-        Phone Number:<span class="required">*</span>
-        <input type="text" formControlName="PhoneNumber" placeholder="Enter phone number (ex- 0123456789)"
-               [ngClass]="{'is-invalid': isFieldInvalid('PhoneNumber')}" />
+         Email:<span class="required">*</span>
+        <input type="email" formControlName="complainantemail" placeholder="Enter email (ex- xyz@gmail.com)"
+               [ngClass]="{'is-invalid': isFieldInvalid('complainantemail')}" />
       </label>
-      <div *ngIf="complainantForm.get('PhoneNumber')?.invalid && (complainantForm.get('PhoneNumber')?.touched || complainantForm.get('PhoneNumber')?.dirty)" class="error-msg">
-        <!-- Required validation message -->
+      <!-- <div *ngIf="complainantForm.get('PhoneNumber')?.invalid && (complainantForm.get('PhoneNumber')?.touched || complainantForm.get('PhoneNumber')?.dirty)" class="error-msg">
+        
         <div *ngIf="complainantForm.get('PhoneNumber')?.hasError('required')">
           Phone Number is required.
         </div>
         
-        <!-- Pattern validation message -->
+        
         <div *ngIf="complainantForm.get('PhoneNumber')?.hasError('pattern') && !complainantForm.get('PhoneNumber')?.hasError('required')">
           Phone Number must contain only digits.
         </div>
         
-        <!-- Minlength validation message -->
+        
         <div *ngIf="complainantForm.get('PhoneNumber')?.hasError('minlength') && !complainantForm.get('PhoneNumber')?.hasError('pattern') && !complainantForm.get('PhoneNumber')?.hasError('required')">
           Phone Number must be 10 digits long.
         </div>
         
-        <!-- Maxlength validation message -->
+        
         <div *ngIf="complainantForm.get('PhoneNumber')?.hasError('maxlength') && !complainantForm.get('PhoneNumber')?.hasError('pattern') && !complainantForm.get('PhoneNumber')?.hasError('required')">
           Phone Number must be 10 digits long.
         </div>
       </div>
-      
+       -->
       
     </div>
 
+    <div class="form-row"> 
     <label>
       Nationality:<span class="required">*</span>
       <input type="text" formControlName="Nationality" placeholder="Nationality"
@@ -111,6 +120,13 @@
         Nationality  must contain only characters.
       </div>
     </div>
+
+    <label>
+       Phone Number: 
+      <input type="number" formControlName="PhoneNumber" placeholder="PhoneNumber"
+             [ngClass]="{'is-invalid': complainantForm.get('PhoneNumber')?.invalid && (complainantForm.get('PhoneNumber')?.touched || complainantForm.get('PhoneNumber')?.dirty)}" />
+    </label>
+  </div>
 
     <div class="form-row">
       <label>
@@ -349,7 +365,13 @@
       Reason of Delay in reporting:
       <input type="text" formControlName="ReasonOfDelay" placeholder="Enter reason of delay in reporting (ex- xyz)" />
     </label>
+
+    <label>
+      Evidences (if any):
+      <input type="file"  multiple  placeholder="Upload Evidences" />
+    </label>
   </div>
 
   <button>Submit</button>
 </form>
+</div>

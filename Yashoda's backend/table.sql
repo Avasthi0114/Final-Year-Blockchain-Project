@@ -202,3 +202,10 @@ create table PoliceData (
    password varchar(250) ,
    UNIQUE (Email)
 );
+
+create table ComplaintDetails (
+    ComplaintId int ,
+    ComplainantId int,
+    PlaceOfOccurance varchar(250),
+    Greviance varchar(250)
+);

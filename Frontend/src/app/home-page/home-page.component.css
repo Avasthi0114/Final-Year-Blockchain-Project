@@ -1,14 +1,18 @@
   
   
   /* Top Menu styles */
-  .top-menu {
+  .topnav {
     display: flex;
     justify-content: space-around;
     background-color: #4cc1e9;
     padding: 10px;
+    margin-top: 76px;
+    width: 100%;
+   position: fixed;
+   left:0;
   }
   
-  .top-menu button {
+  .topnav button {
     background-color: #8bc34a;
     border-radius: 5px;
     border-color: #4cc1e9 ;
@@ -20,14 +24,16 @@
     padding-right: 10px;
   }
   
-  .top-menu button:hover {
+  .topnav button:hover {
      background-color: #d60b0b;
   }
   
   /* Main Content styles */
   .main-content {
     display: flex;
-    padding: 20px;
+    padding-top: 145px;
+   
+     
   }
   
   /* .left-panel img, .center-panel img {

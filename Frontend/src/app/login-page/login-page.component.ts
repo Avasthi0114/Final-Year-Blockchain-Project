@@ -85,7 +85,7 @@ export class LoginPageComponent implements OnInit {
           this.LoginForm.reset();
           this.errorMessage = ''; // Clear any previous error messages
           this.ngxService.stop();
-          this.router.navigate(['/eFIR']);
+          this.router.navigate(['/complainantdash']);
         },
         (error) => {
           this.ngxService.stop();
