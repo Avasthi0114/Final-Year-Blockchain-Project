@@ -1,4 +1,4 @@
-<h1 class="heading">Police signup</h1>
+<h1 class="heading">Police Signup</h1>
 <form  [formGroup]="PoliceSignUpForm" (ngSubmit)="SignUp()">
     <div class="form-group">
         <label>
@@ -128,6 +128,10 @@
                 <li>At least one special character</li>
               
             </div>
+          </div>
+
+          <div *ngIf="errorMessage" class="notification error">
+            {{ errorMessage }}
           </div>
     </div>
     <div class="signup-btn">

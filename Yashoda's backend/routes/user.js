@@ -12,53 +12,15 @@ let pdf = require('html-pdf');
 let path = require('path');
 var fs = require('fs');
 var uuid = require('uuid');
-
-// router.post("/SignUpComplainant", async (req, res) => {
-//   let user = req.body;
-
-//   // Check if the user already exists
-//   const query = "SELECT Name, Email, PhoneNumber, password FROM complainantdata WHERE Email=?";
-//   connection.query(query, [user.Email], async (err, results) => {
-//     if (!err) {
-//       if (results.length <= 0) {
-//         try {
-//           // Hash the password
-//           const saltRounds = 10;
-//           const hashedPassword = await bcrypt.hash(user.password, saltRounds);
-
-//           // Insert the new user into the database
-//           const insertQuery = "INSERT INTO complainantdata(Name, Email, PhoneNumber, password) VALUES(?, ?, ?, ?)";
-//           connection.query(
-//             insertQuery,
-//             [user.Name, user.Email, user.PhoneNumber, hashedPassword],
-//             (err, results) => {
-//               if (!err) {
-//                 return res.status(200).json({ message: "Successfully complainant registered" });
-//               } else {
-//                 return res.status(500).json(err);
-//               }
-//             }
-//           );
-//         } catch (hashError) {
-//           return res.status(500).json({ message: "Error hashing the password", error: hashError });
-//         }
-//       } else {
-//         return res.status(400).json({ message: "Email already exists" });
-//       }
-//     } else {
-//       return res.status(500).json(err);
-//     }
-//   });
-// });
-
- 
+  
 
 router.post("/SignUpComplainant", async (req, res) => {
   let user = req.body;
 
   // Check if the user already exists
-  const query = "SELECT Name, Email, PhoneNumber, password FROM complainantdata WHERE Email=?";
-  connection.query(query, [user.Email], (err, results) => {
+// Updated query to check both Email and PhoneNumber
+const query = "SELECT Name, Email, PhoneNumber, password FROM complainantdata WHERE Email=? OR PhoneNumber=?";
+connection.query(query, [user.Email, user.PhoneNumber], (err, results) => {
     if (!err) {
       if (results.length <= 0) {
         try {
@@ -85,7 +47,7 @@ router.post("/SignUpComplainant", async (req, res) => {
           return res.status(500).json({ message: "Error hashing the password", error: hashError });
         }
       } else {
-        return res.status(400).json({ message: "Email already exists" });
+        return res.status(400).json({ message: "Email or phonenumber already exists" });
       }
     } else {
       return res.status(500).json(err);
@@ -98,8 +60,8 @@ router.post("/SignUpPoliceOfficer", async (req, res) => {
   let user = req.body;
 
   // Check if the user already exists
-  const query = "SELECT Name, Email, PhoneNumber, PoliceOfficerRank, PoliceOfficerId, PoliceStationId, password FROM policedata WHERE Email=?";
-  connection.query(query, [user.Email], async (err, results) => {
+  const query = "SELECT Name, Email, PhoneNumber, PoliceOfficerRank, PoliceOfficerId, PoliceStationId, password  FROM policedata  WHERE Email=? OR PhoneNumber=? OR PoliceOfficerId=?";
+   connection.query(query, [user.Email, user.PhoneNumber, user.PoliceOfficerId], async (err, results) => {
     if (!err) {
       if (results.length <= 0) {
         try {
@@ -126,66 +88,14 @@ router.post("/SignUpPoliceOfficer", async (req, res) => {
           return res.status(500).json({ message: "Error hashing the password", error: hashError });
         }
       } else {
-        return res.status(400).json({ message: "Email already exists" });
+        return res.status(400).json({ message: "Email or phonenumber or PoliceOfficerId already exists" });
       }
     } else {
       return res.status(500).json(err);
     }
   });
 });
-
-
-//creating login APIs
-// router.post("/login", (req, res) => {
-//     const user = req.body;
-//     query = "select Name,password from signupdata where Email=?";
-//     connection.query(query, [user.Email], (err, results) => {
-//       if (!err) {
-//         if (results.length <= 0 || results[0].password != user.password) {
-//           return res
-//             .status(401)
-//             .json({ message: "incorrect username or password" });
-//         } else if (results[0].password == user.password) {
-//           // const response = { Email: results[0].email };
-//           // const accessToken = jwt.sign(response, process.env.ACCESS_TOKEN, {
-//           //   expiresIn: "8h",
-//           // });
-//           // res.status(200).json({ token: accessToken });
-//           return res.status(200).json({ message: "successfully login" });
-//         } else {
-//           return res.status(400).json({ message: "something went wrong" });
-//         }
-//       } else {
-//         return res.status(500).json(err);
-//       }
-//     });
-//   });
-
  
-
-// router.post("/login", (req, res) => {
-//   const user = req.body;
-
-//   const query = "SELECT Name,password FROM signupdata WHERE Email=?";
-//   connection.query(query, [user.Email], async (err, results) => {
-//     if (!err) {
-//       if (results.length <= 0) {
-//         return res.status(401).json({ message: "Incorrect username or password" });
-//       } else {
-//         const dbPassword = results[0].password;
-//         // Compare the hashed password
-//         const passwordMatch = await bcrypt.compare(user.password, dbPassword);
-//         if (passwordMatch) {
-//           return res.status(200).json({ message: "Successfully logged in" });
-//         } else {
-//           return res.status(401).json({ message: "Incorrect username or password" });
-//         }
-//       }
-//     } else {
-//       return res.status(500).json(err);
-//     }
-//   });
-// });
 
 router.post("/loginComplainant", (req, res) => {
   const user = req.body;
@@ -244,65 +154,65 @@ router.post("/loginPolice", (req, res) => {
 });
 
 
-router.post("/form", (req, res) => {
-  let user = req.body;
-  console.log("Incoming user data:", user);
-  // Check if UIDNo already exists
-  query = "SELECT UIDNo FROM user WHERE UIDNo = ?";
-  connection.query(query, [user.UIDNo], (err, results) => {
-      if (!err) {
-          if (results.length <= 0) {
-              // Insert new user without email
-              query = "INSERT INTO user(UserName, FatherOrHusbandName, DateOfBirth , Nationality,PhoneNumber, PermanentAddress, TemporaryAddress, UIDNo, PassportNo, DateOfIssue, PlaceOfIssue, IDType, IDNumber, Occupation, PropertyCategory, PropertyType, DescriptionOfProperty, TotleValueOfProperty, ValueOfProperty, OccurenceDay, OccurenceDateFrom, OccurenceDateTo, OccurenceTimePeriod, OccurenceTimeFrom, OccurenceTimeTo, OccurenceDate, OccurenceTime, Occurence, Accused, FirstInformationcontent, ReasonOfDelay,complainantemail) VALUES(?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?)";
+// router.post("/form", (req, res) => {
+//   let user = req.body;
+//   console.log("Incoming user data:", user);
+//   // Check if UIDNo already exists
+//   query = "SELECT UIDNo FROM user WHERE UIDNo = ?";
+//   connection.query(query, [user.UIDNo], (err, results) => {
+//       if (!err) {
+//           if (results.length <= 0) {
+//               // Insert new user without email
+//               query = "INSERT INTO user(UserName, FatherOrHusbandName, DateOfBirth , Nationality,PhoneNumber, PermanentAddress, TemporaryAddress, UIDNo, PassportNo, DateOfIssue, PlaceOfIssue, IDType, IDNumber, Occupation, PropertyCategory, PropertyType, DescriptionOfProperty, TotleValueOfProperty, ValueOfProperty, OccurenceDay, OccurenceDateFrom, OccurenceDateTo, OccurenceTimePeriod, OccurenceTimeFrom, OccurenceTimeTo, OccurenceDate, OccurenceTime, Occurence, Accused, FirstInformationcontent, ReasonOfDelay,complainantemail) VALUES(?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?)";
 
-              connection.query(query, [
-                  user.UserName,
-                  user.FatherOrHusbandName,
-                  user.DateOfBirth,
-                  user.Nationality,
-                  user.PhoneNumber,
-                  user.PermanentAddress,
-                  user.TemporaryAddress,
-                  user.UIDNo,
-                  user.PassportNo,
-                  user.DateOfIssue,
-                  user.PlaceOfIssue,
-                  user.IDType,
-                  user.IDNumber,
-                  user.Occupation,
-                  user.PropertyCategory,
-                  user.PropertyType,
-                  user.DescriptionOfProperty,
-                  user.TotleValueOfProperty,
-                  user.ValueOfProperty,
-                  user.OccurenceDay,
-                  user.OccurenceDateFrom,
-                  user.OccurenceDateTo,
-                  user.OccurenceTimePeriod,
-                  user.OccurenceTimeFrom,
-                  user.OccurenceTimeTo,
-                  user.OccurenceDate,
-                  user.OccurenceTime,
-                  user.Occurence,
-                  user.Accused,
-                  user.FirstInformationcontent,
-                  user.ReasonOfDelay,
-                  user.complainantemail,
-              ], (err, results) => {
-                  if (!err) {
-                      return res.status(200).json({ message: "Successfully added" });
-                  } else {
-                      return res.status(500).json(err);
-                  }
-              });
-          } else {
-              return res.status(400).json({ message: "User with this UIDNo already exists" });
-          }
-      } else {
-          return res.status(500).json(err);
-      }
-  });
-});
+//               connection.query(query, [
+//                   user.UserName,
+//                   user.FatherOrHusbandName,
+//                   user.DateOfBirth,
+//                   user.Nationality,
+//                   user.PhoneNumber,
+//                   user.PermanentAddress,
+//                   user.TemporaryAddress,
+//                   user.UIDNo,
+//                   user.PassportNo,
+//                   user.DateOfIssue,
+//                   user.PlaceOfIssue,
+//                   user.IDType,
+//                   user.IDNumber,
+//                   user.Occupation,
+//                   user.PropertyCategory,
+//                   user.PropertyType,
+//                   user.DescriptionOfProperty,
+//                   user.TotleValueOfProperty,
+//                   user.ValueOfProperty,
+//                   user.OccurenceDay,
+//                   user.OccurenceDateFrom,
+//                   user.OccurenceDateTo,
+//                   user.OccurenceTimePeriod,
+//                   user.OccurenceTimeFrom,
+//                   user.OccurenceTimeTo,
+//                   user.OccurenceDate,
+//                   user.OccurenceTime,
+//                   user.Occurence,
+//                   user.Accused,
+//                   user.FirstInformationcontent,
+//                   user.ReasonOfDelay,
+//                   user.complainantemail,
+//               ], (err, results) => {
+//                   if (!err) {
+//                       return res.status(200).json({ message: "Successfully added" });
+//                   } else {
+//                       return res.status(500).json(err);
+//                   }
+//               });
+//           } else {
+//               return res.status(400).json({ message: "User with this UIDNo already exists" });
+//           }
+//       } else {
+//           return res.status(500).json(err);
+//       }
+//   });
+// });
 
  
 

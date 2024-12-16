@@ -92,6 +92,10 @@
             
           </div>
         </div>
+
+        <div *ngIf="errorMessage" class="notification error">
+          {{ errorMessage }}
+        </div>
         
     </div>
     <div class="signup-btn">

@@ -1,20 +1,22 @@
 <div class="form-top-menu">
   <button>Home</button>
   <button>About Us</button>
-  <button routerLink="">Sign out</button>
+  <button routerLink="">Sign Out</button>
 </div>
 
-<div class="navbar">
+
+
+<div class="left-navbar">
   <ul>
-    <button routerLink="/eFIR">Home</button>
-    <button routerLink="/eFIR">Register complaint</button>
-    <button routerLink="/eFIR">View complaint</button>
-    <!-- <button routerLink="/eFIR">Register complaint</button> -->
+    <button routerLink="/complainantdash">Home</button>
+    <button routerLink="/eFIR">Register Complaint</button>
+    <button routerLink="/">View Complaints</button>
+    <button routerLink="/viewprofile">View Profile</button>
   </ul>
 </div>
 
 <div class="content"> 
-<h1 class="heading">Complainant form</h1>
+<h1 class="heading">Complainant Form</h1>
 <form [formGroup]="complainantForm" (ngSubmit)="submitAction()">
   <div class="personal-details">
     <h1>Personal Details:</h1>
@@ -79,29 +81,9 @@
         <input type="email" formControlName="complainantemail" placeholder="Enter email (ex- xyz@gmail.com)"
                [ngClass]="{'is-invalid': isFieldInvalid('complainantemail')}" />
       </label>
-      <!-- <div *ngIf="complainantForm.get('PhoneNumber')?.invalid && (complainantForm.get('PhoneNumber')?.touched || complainantForm.get('PhoneNumber')?.dirty)" class="error-msg">
-        
-        <div *ngIf="complainantForm.get('PhoneNumber')?.hasError('required')">
-          Phone Number is required.
-        </div>
-        
-        
-        <div *ngIf="complainantForm.get('PhoneNumber')?.hasError('pattern') && !complainantForm.get('PhoneNumber')?.hasError('required')">
-          Phone Number must contain only digits.
-        </div>
-        
-        
-        <div *ngIf="complainantForm.get('PhoneNumber')?.hasError('minlength') && !complainantForm.get('PhoneNumber')?.hasError('pattern') && !complainantForm.get('PhoneNumber')?.hasError('required')">
-          Phone Number must be 10 digits long.
-        </div>
-        
-        
-        <div *ngIf="complainantForm.get('PhoneNumber')?.hasError('maxlength') && !complainantForm.get('PhoneNumber')?.hasError('pattern') && !complainantForm.get('PhoneNumber')?.hasError('required')">
-          Phone Number must be 10 digits long.
-        </div>
+      <div *ngIf=" complainantForm.get('complainantemail')?.invalid && ( complainantForm.get('complainantemail')?.touched ||  complainantForm.get('complainantemail')?.dirty)" class="error-msg">
+        Email is required
       </div>
-       -->
-      
     </div>
 
     <div class="form-row"> 
@@ -121,11 +103,40 @@
       </div>
     </div>
 
-    <label>
-       Phone Number: 
+    <!-- <label>
+       Phone Number:
       <input type="number" formControlName="PhoneNumber" placeholder="PhoneNumber"
              [ngClass]="{'is-invalid': complainantForm.get('PhoneNumber')?.invalid && (complainantForm.get('PhoneNumber')?.touched || complainantForm.get('PhoneNumber')?.dirty)}" />
+    </label> -->
+
+    <label>
+      Phone Number:<span class="required">*</span>
+      <input type="text" formControlName="PhoneNumber" placeholder="Enter phone number (ex- 0123456789)"
+      [ngClass]="{'is-invalid': complainantForm.get('PhoneNumber')?.invalid && (complainantForm.get('PhoneNumber')?.touched || complainantForm.get('PhoneNumber')?.dirty)}" />
     </label>
+    <div *ngIf="complainantForm.get('PhoneNumber')?.invalid && (complainantForm.get('PhoneNumber')?.touched || complainantForm.get('PhoneNumber')?.dirty)" class="error-msg">
+      <!-- Required validation message -->
+      <div *ngIf="complainantForm.get('PhoneNumber')?.hasError('required')">
+        Phone Number is required.
+      </div>
+      
+      <!-- Pattern validation message -->
+      <div *ngIf="complainantForm.get('PhoneNumber')?.hasError('pattern') && !complainantForm.get('PhoneNumber')?.hasError('required')">
+        Phone Number must contain only digits.
+      </div>
+      
+      <!-- Minlength validation message -->
+      <div *ngIf="complainantForm.get('PhoneNumber')?.hasError('minlength') && !complainantForm.get('PhoneNumber')?.hasError('pattern') && !complainantForm.get('PhoneNumber')?.hasError('required')">
+        Phone Number must be 10 digits long.
+      </div>
+      
+      <!-- Maxlength validation message -->
+      <div *ngIf="complainantForm.get('PhoneNumber')?.hasError('maxlength') && !complainantForm.get('PhoneNumber')?.hasError('pattern') && !complainantForm.get('PhoneNumber')?.hasError('required')">
+        Phone Number must be 10 digits long.
+      </div>
+    </div>
+    
+    
   </div>
 
     <div class="form-row">

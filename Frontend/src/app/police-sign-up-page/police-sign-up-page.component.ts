@@ -13,7 +13,7 @@ import { NgxUiLoaderService } from 'ngx-ui-loader';
 })
 export class PoliceSignUpPageComponent {
   constructor(private ngxService: NgxUiLoaderService) {} 
-  
+  errorMessage: string = '';
   httpService = inject(HttpService); 
   // router = inject(Router);
   
@@ -88,14 +88,19 @@ export class PoliceSignUpPageComponent {
     this.httpService.SignUpPolice(data).subscribe(
       (response) => {
         console.log('Form submitted successfully!', response);
-  
+        this.errorMessage = ''; // Clear any previous error messages
+        this.ngxService.stop();
         // Reset the form only after a successful submission
         this.PoliceSignUpForm.reset();
         
       },
       (error) => {
         console.error('Error occurred:', error);
-        
+        this.ngxService.stop();
+        if (error.status === 400) {
+          console.log('Email or phonenumber or PoliceOfficerId already exits');
+          this.errorMessage = 'Email or phonenumber or PoliceOfficerId already exits'; // Set the error message
+        } 
       }
     );
   }
