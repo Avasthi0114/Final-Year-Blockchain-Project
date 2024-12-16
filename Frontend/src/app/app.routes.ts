@@ -6,7 +6,11 @@ import { LoginPageComponent } from './login-page/login-page.component';
 import { SignUpPageComponent } from './sign-up-page/sign-up-page.component';
 import { PoliceSignUpPageComponent } from './police-sign-up-page/police-sign-up-page.component';
 import { PopupComponent } from './popup/popup.component';
-import { ComplainantdashboardComponent } from './complainantdashboard/complainantdashboard.component';
+import { ComplainantdashboardComponent } from './complainantview/complainantdashboard/complainantdashboard.component';
+import { ViewProfileComponent } from './complainantview/view-profile/view-profile.component';
+import { PolicedashComponent } from './policetview/policedash/policedash.component';
+import { PoliceViewprofileComponent } from './policetview/police-viewprofile/police-viewprofile.component';
+ 
  
 
 export const routes: Routes = [
@@ -18,7 +22,16 @@ export const routes: Routes = [
         path: 'eFIR', component:FormComponent
     },
     {
-        path: 'complainantdash', component: ComplainantdashboardComponent
+        path: 'complainantdash', component:  ComplainantdashboardComponent
+    },
+    {
+        path: 'viewprofile', component:  ViewProfileComponent
+    },
+    {
+        path: 'policedash', component:  PolicedashComponent
+    },
+    {
+        path: 'policeviewprofile', component:  PoliceViewprofileComponent
     },
     {
         path: 'm', component:PdfFormComponent

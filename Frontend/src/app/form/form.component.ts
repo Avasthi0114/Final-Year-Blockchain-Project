@@ -92,10 +92,7 @@ export class FormComponent {
         dateBeforeTodayValidator
       ]),
       complainantemail: new FormControl('',[
-        Validators.required,
-        // Validators.minLength(10),
-        // Validators.maxLength(10),
-        // Validators.pattern('^[0-9]*$')  
+        Validators.required, 
         ]),  
       Nationality: new FormControl('Indian',[
         Validators.required,
@@ -103,9 +100,9 @@ export class FormComponent {
       ]),
       PhoneNumber: new FormControl('',[
         Validators.required,
-        // Validators.minLength(10),
-        // Validators.maxLength(10),
-        // Validators.pattern('^[0-9]*$')  
+        Validators.minLength(10),
+        Validators.maxLength(10),
+        Validators.pattern('^[0-9]*$') // Only numbers allowed 
         ]), 
       PermanentAddress: new FormControl('',[
         Validators.required
@@ -162,7 +159,7 @@ export class FormComponent {
   }, { validators: occurrenceDateValidator() });
 
   ngOnInit() {
-     
+    
   }
 
   isFieldInvalid(field: string): boolean {
@@ -193,7 +190,6 @@ export class FormComponent {
     FatherOrHusbandName: formData.FatherOrHusbandName, 
     DateOfBirth: formData.DateOfBirth,
     Nationality: formData.Nationality,
-    PhoneNumber: formData.PhoneNumber,
     PermanentAddress: formData.PermanentAddress,
     TemporaryAddress: formData.TemporaryAddress,
     UIDNo: formData.UIDNo,
@@ -221,6 +217,7 @@ export class FormComponent {
     FirstInformationcontent: formData.FirstInformationcontent || null,
     ReasonOfDelay: formData.ReasonOfDelay || null,
     complainantemail: formData.complainantemail,
+    PhoneNumber: formData.PhoneNumber,
   };
 
   // Generate PDF and handle response
@@ -228,6 +225,7 @@ export class FormComponent {
     (response: any) => {
       if (response?.uuid) {
         this.downloadPdf(response.uuid);
+        this.complainantForm.reset();
       } else {
         console.error("PDF generation failed.");
       }
@@ -238,19 +236,19 @@ export class FormComponent {
   );
 
   // Submit form data to add information
-  this.httpService.addInformation(data).subscribe(
-    (response) => {
-      console.log('Form submitted successfully!', response);
+  // this.httpService.addInformation(data).subscribe(
+  //   (response) => {
+  //     console.log('Form submitted successfully!', response);
 
-      // Reset the form only after a successful submission
-      this.complainantForm.reset();
-      this.ngxService.stop(); // Stop the loader after success
-    },
-    (error) => {
-      console.error('Error occurred:', error);
-      this.ngxService.stop(); // Stop the loader on error
-    }
-  );
+  //     // Reset the form only after a successful submission
+  //     this.complainantForm.reset();
+  //     this.ngxService.stop(); // Stop the loader after success
+  //   },
+  //   (error) => {
+  //     console.error('Error occurred:', error);
+  //     this.ngxService.stop(); // Stop the loader on error
+  //   }
+  // );
 }
 
 

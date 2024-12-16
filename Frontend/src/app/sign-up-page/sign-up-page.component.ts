@@ -17,7 +17,8 @@ export class SignUpPageComponent {
   constructor(private ngxService: NgxUiLoaderService) {}
   httpService = inject(HttpService); 
   router = inject(Router);
-  
+  errorMessage: string = '';
+
   SignUpForm = new FormGroup({
     Name: new FormControl('',[
       Validators.required,
@@ -77,13 +78,19 @@ export class SignUpPageComponent {
     this.httpService.SignUpComplaiant(data).subscribe(
       (response) => {
         console.log(' complainant sign up Form submitted successfully!', response);
-  
+        this.errorMessage = ''; // Clear any previous error messages
+        this.ngxService.stop();
         // Reset the form only after a successful submission
         this.SignUpForm.reset();
         
       },
       (error) => {
         console.error('Error occurred:', error);
+        this.ngxService.stop();
+        if (error.status === 400) {
+          console.log('Email or phonenumber already exits');
+          this.errorMessage = 'Email or phonenumber already exits'; // Set the error message
+        } 
         
       }
     );
