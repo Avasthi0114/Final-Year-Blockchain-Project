@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { HttpService } from '../service/http.service';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
@@ -73,6 +73,7 @@ export class FormComponent {
   httpClient = inject(HttpClient)
   httpService = inject(HttpService); 
   router = inject(Router);
+<<<<<<< HEAD
 
   selectedFiles: File[] = [];
   uploadResponse: string | null = null;
@@ -118,7 +119,22 @@ export class FormComponent {
   }
   
   responseMessage:any;
+=======
+  isSuccess : boolean = false;
+  responseMessage:any;
+ 
+  selectedFile: File | null = null;
+
+  constructor(private ngxService: NgxUiLoaderService, private fb: FormBuilder, private http: HttpClient) {
+    
+  }
+>>>>>>> 1d4ebd13c3621dd0ffd629c52cac9a25fc93d407
   complainantForm = new FormGroup({
+    ComplaintID: new FormControl('', [
+      Validators.required,
+      Validators.pattern('^[a-zA-Z0-9]*$')
+    ]),
+
       UserName: new FormControl('',[
         Validators.required,
         Validators.pattern('^[a-zA-Z ]*$')
@@ -198,9 +214,25 @@ export class FormComponent {
       Accused: new FormControl(''),
       FirstInformationcontent: new FormControl(''),
       ReasonOfDelay: new FormControl('')  ,
+      file: new FormControl('')
   }, { validators: occurrenceDateValidator() });
 
+  ComplaintID: string = '';
   ngOnInit() {
+
+    // Fetch the complainant ID from the backend
+    this.httpService.getComplaintID().subscribe(
+      (response: any) => {
+        this.ComplaintID = response.complaintID;
+        console.log('Current Complaint ID:', this.ComplaintID);
+         // Set the ComplaintID in the form
+        this.complainantForm.get('ComplaintID')?.setValue(this.ComplaintID);
+      },
+      (error) => {
+        console.error('Error fetching complaint ID:', error);
+      }
+    );
+
     
   }
 
@@ -214,6 +246,13 @@ export class FormComponent {
     return (control?.touched ?? false) || (control?.dirty ?? false);
   }
 
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files?.length) {
+      this.selectedFile = input.files[0];
+    }
+  }
+
  submitAction() {
   // Start the loader
   this.ngxService.start();
@@ -222,12 +261,23 @@ export class FormComponent {
   if (this.complainantForm.invalid) {
     this.complainantForm.markAllAsTouched();
     this.ngxService.stop();
-    return;
+    this.responseMessage = 'Form submission failed. Please check all required fields.';
+    this.isSuccess = false;
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    setTimeout(() => {
+      this.isSuccess = false; // Hide success message
+      this.responseMessage = ''; // Clear message
+    }, 5000); // 5000 milliseconds = 5 seconds
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    return; // Stop further execution
   }
 
   // Get form data
   const formData = this.complainantForm.value;
   const data = {
+    ComplaintID: formData.ComplaintID,
     UserName: formData.UserName,
     FatherOrHusbandName: formData.FatherOrHusbandName, 
     DateOfBirth: formData.DateOfBirth,
@@ -297,6 +347,7 @@ export class FormComponent {
   this.httpService.generatePDF(data).subscribe(
     (response: any) => {
       if (response?.uuid) {
+<<<<<<< HEAD
         this.downloadPdf(response.uuid); // Download the PDF
         console.log("PDF downloaded");
 
@@ -318,6 +369,58 @@ export class FormComponent {
       } else {
         console.error("PDF generation failed.");
         this.ngxService.stop();
+=======
+        this.downloadPdf(response.uuid);
+    //     this.complainantForm.reset();
+    //   } else {
+    //     console.error("PDF generation failed.");
+    //   }
+
+    // },
+         // Step 2: Send email
+         if (data.complainantemail) {
+          this.httpService.sendEmailBackend({
+            complainantEmail: data.complainantemail,
+            UserName: data.UserName as string,
+          }).subscribe(
+            (emailResponse) => {
+              console.log('Email sent successfully!', emailResponse);
+            },
+            (emailError) => {
+              console.error('Error sending email:', emailError);
+            }
+          );
+        } else {
+          console.error('Complainant email is missing.');
+        }
+
+        this.httpService.incrementComplaintID().subscribe(
+          (complaintIDResponse: any) => {
+            this.ComplaintID = complaintIDResponse.complaintID;  // Update the complaint ID after increment
+            console.log('Complaint ID incremented successfully:', this.ComplaintID);
+          },
+          (error: { message: string; }) => {
+            console.error('Error incrementing complainant ID:', error);
+            // this.responseMessage = 'Error incrementing complaint ID: ' + error.message;
+          }
+        );
+  
+
+        // Reset the form after success
+        this.complainantForm.reset();
+        this.responseMessage = 'Form submitted successfully! An email will be sent to you. Please check your inbox.';
+        this.isSuccess = true;
+
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        setTimeout(() => {
+          this.isSuccess = false; // Hide success message
+          this.responseMessage = ''; // Clear message
+        }, 5000); // 5000 milliseconds = 5 seconds
+  
+         
+      } else {
+        console.error('PDF generation failed.');
+>>>>>>> 1d4ebd13c3621dd0ffd629c52cac9a25fc93d407
       }
     },
     (error: any) => {
@@ -325,8 +428,44 @@ export class FormComponent {
       this.responseMessage = error.error?.message || "Error generating PDF.";
       this.ngxService.stop();
     }
+
+    
   );
 
+<<<<<<< HEAD
+=======
+  // Submit form data to add information
+  // this.httpService.addInformation(data).subscribe(
+  //   (response) => {
+  //     console.log('Form submitted successfully!', response);
+
+  //     // Reset the form only after a successful submission
+  //     this.complainantForm.reset();
+  //     this.ngxService.stop(); // Stop the loader after success
+  //   },
+  //   (error) => {
+  //     console.error('Error occurred:', error);
+  //     this.ngxService.stop(); // Stop the loader on error
+  //   }
+  // );
+
+  if (this.selectedFile) {
+    const formData = new FormData();
+    formData.append('file', this.selectedFile);
+
+    this.http.post('http://localhost:8081/user/upload', formData).subscribe(
+      (response) => {
+        console.log('File uploaded successfully:', response);
+      },
+      (error) => {
+        console.error('File upload failed:', error);
+      }
+    );
+  }
+
+
+  
+>>>>>>> 1d4ebd13c3621dd0ffd629c52cac9a25fc93d407
 }
 
 

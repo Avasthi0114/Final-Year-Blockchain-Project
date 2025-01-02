@@ -65,6 +65,15 @@ export class SignUpPageComponent {
     // If the form is invalid, mark all fields as touched to show validation errors and stop execution
     if (this.SignUpForm.invalid) {
       this.SignUpForm.markAllAsTouched();
+      // Show error alert for missing details
+      const validationErrorAlert = document.getElementById('validationErrorAlert');
+      if (validationErrorAlert) validationErrorAlert.style.display = 'block';
+  
+      // Auto-hide the alert after 3 seconds
+      setTimeout(() => {
+        if (validationErrorAlert) validationErrorAlert.style.display = 'none';
+      }, 3000);
+
       this.ngxService.stop();
       return;
     }
@@ -79,13 +88,34 @@ export class SignUpPageComponent {
       (response) => {
         console.log(' complainant sign up Form submitted successfully!', response);
         this.errorMessage = ''; // Clear any previous error messages
-        this.ngxService.stop();
-        // Reset the form only after a successful submission
-        this.SignUpForm.reset();
+        // this.ngxService.stop();
+        // this.SignUpForm.reset();
+         // Reset the form after successful submission
+         this.SignUpForm.reset();
+  
+         // Show success alert
+         const successAlert = document.getElementById('successAlert');
+         if (successAlert) successAlert.style.display = 'block';
+   
+         // Auto-hide the alert after 3 seconds
+         setTimeout(() => {
+           if (successAlert) successAlert.style.display = 'none';
+         }, 3000);
+   
+         this.ngxService.stop();
         
       },
       (error) => {
         console.error('Error occurred:', error);
+             // Show error alert for backend error
+             const errorAlert = document.getElementById('errorAlert');
+             if (errorAlert) errorAlert.style.display = 'block';
+       
+             // Auto-hide the alert after 3 seconds
+             setTimeout(() => {
+               if (errorAlert) errorAlert.style.display = 'none';
+             }, 3000);
+
         this.ngxService.stop();
         if (error.status === 400) {
           console.log('Email or phonenumber already exits');
@@ -94,6 +124,13 @@ export class SignUpPageComponent {
         
       }
     );
+  }
+  
+   
+  // Function to close the alert manually
+  closeAlert(alertId: string) {
+    const alert = document.getElementById(alertId);
+    if (alert) alert.style.display = 'none';
   }
   
 

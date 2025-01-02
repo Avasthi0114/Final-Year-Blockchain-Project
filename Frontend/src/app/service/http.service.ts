@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { catchError, Observable, tap } from 'rxjs';
 import {environment} from '../../environments/environment';
 
 @Injectable({
@@ -21,7 +21,21 @@ export class HttpService {
  constructor(private httpClient:HttpClient){}
  url = environment.apiUrl;
 
+<<<<<<< HEAD
  ipfsurl = environment.ipfsurl;
+=======
+ private complainantEmail : string | null = null;
+
+ getComplaintID(): Observable<{ complaintID: string }> {
+  return this.httpClient.get<{ complaintID: string }>('http://localhost:8081/user/complaint-id');
+}
+
+
+incrementComplaintID(): Observable<{ complaintID: string }> {
+  return this.httpClient.post<{ complaintID: string }>('http://localhost:8081/user/incrementComplaintId', {});
+}
+
+>>>>>>> 1d4ebd13c3621dd0ffd629c52cac9a25fc93d407
 
  addInformation(data: any) {
   console.log("Data being sent: ", data);
@@ -90,12 +104,51 @@ getPDF(data: any): Observable<Blob> {
 }
 
 
+<<<<<<< HEAD
 uploadToIPFS(): Observable<any> {
   return this.httpClient.post(`${this.ipfsurl}/uploadToIPFS`, {}, {
     responseType: 'json' // Default type, expects a JSON response
   });
 }
- 
+=======
+sendEmailBackend(emailData: { complainantEmail: string, UserName: string }): Observable<any> {
+  return this.httpClient.post(this.url + "/user/sendEmail", emailData);
+}
+
+
+// getComplainantDetailsByEmail(complainantID: string): Observable<any> {
+//   const url = `${this.apiUrl}/complainant/${complainantID}`;
+//   return this.http.get<any>(url).pipe(
+//     tap(data => console.log('Complainant details response:', data)),
+//     catchError(error => {
+//       console.error('Error fetching complainant details:', error);
+//       throw error;
+//     })
+//   );
+// }
+
+getComplainantEmail(): string | null {
+  return this.complainantEmail;
+}
+
+
+getComplainantDetailsByEmail(complainantEmail: string): Observable<any> {
+  const url = this.url + "complainant/${complainantEmail}";
+  return this.httpClient.get<any>(url).pipe(
+    tap(data => console.log('Complainant details response:', data)),
+    catchError(error => {
+      console.error('Error fetching complainant details:', error);
+      throw error;
+    })
+  );
+}
+
 
 }
+
+
+>>>>>>> 1d4ebd13c3621dd0ffd629c52cac9a25fc93d407
+ 
+
+
  

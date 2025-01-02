@@ -1,4 +1,20 @@
-<h1 class="heading">Police Signup</h1>
+<!-- Validation Error Alert -->
+<div id="validationErrorAlert" class="alert alert-error" style="display: none;">
+  Please fill out all required fields correctly before submitting.
+</div>
+
+<!-- Success Alert -->
+<div id="successAlert" class="alert alert-success" style="display: none;">
+  Your signup was successful!
+</div>
+
+<!-- Backend Error Alert -->
+<div id="errorAlert" class="alert alert-error" style="display: none;">
+  An error occurred while submitting your signup. Please try again later.
+</div>
+
+<h1 class="heading">Police signup</h1>
+
 <form  [formGroup]="PoliceSignUpForm" (ngSubmit)="SignUp()">
     <div class="form-group">
         <label>

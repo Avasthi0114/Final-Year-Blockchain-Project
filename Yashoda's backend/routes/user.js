@@ -5,6 +5,8 @@ const bcrypt = require('bcrypt');
 const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
+const qrcode = require('qrcode');
+const multer = require("multer");
 require('dotenv').config();
 
 let ejs = require('ejs');
@@ -12,6 +14,7 @@ let pdf = require('html-pdf');
 let path = require('path');
 var fs = require('fs');
 var uuid = require('uuid');
+
   
 
 router.post("/SignUpComplainant", async (req, res) => {
@@ -293,6 +296,7 @@ router.post('/generatereport', (req, res) => {
 
   // Render the EJS template to generate the PDF
   ejs.renderFile(path.join(__dirname, "", "FIR_Report.ejs"), {
+    ComplaintID: userDetails.ComplaintID,
       UserName: userDetails.UserName,
       FatherOrHusbandName: userDetails.FatherOrHusbandName,
       DateOfBirth: userDetails.DateOfBirth,
@@ -356,5 +360,303 @@ router.post('/getPdf', (req, res) => {
 });
  
 
+router.get('/complainant/:Email', async (req, res) => {
+  const { Email } = req.params;
+
+  try {
+    // Use promise-based query
+    const [rows] = await connection.promise().query('SELECT * FROM complainantdata WHERE Email = ?', [Email]);
+
+    if (rows.length === 0) {
+      return res.status(404).json({ message: 'Complainant not found' });
+    }
+
+    res.json(rows[0]);  // Send the first result if there's a match
+  } catch (error) {
+    console.error('Error fetching complainant:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+
+router.get('/police/:Email', async (req, res) => {
+  const { Email } = req.params;
+
+  try {
+    // Use promise-based query
+    const [rows] = await connection.promise().query('SELECT * FROM policedata WHERE Email = ?', [Email]);
+
+    if (rows.length === 0) {
+      return res.status(404).json({ message: 'Complainant not found' });
+    }
+
+    res.json(rows[0]);  // Send the first result if there's a match
+  } catch (error) {
+    console.error('Error fetching complainant:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+
+// Configure multer for file uploads
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    // Set the destination folder for uploaded files
+    cb(null, path.join(__dirname, "Evidences"));
+  },
+  filename: (req, file, cb) => {
+    // Set the file name
+    cb(null, Date.now() + "_" + file.originalname);
+  },
+});
+
+const upload = multer({ storage: storage });
+
+// Middleware to parse JSON
+router.use(express.json());
+
+// API to handle file uploads
+router.post("/upload", upload.single("file"), (req, res) => {
+  try {
+    // File details available in req.file
+    console.log("File uploaded:", req.file);
+
+    // Respond with a success message
+    res.status(200).json({
+      message: "File uploaded successfully",
+      file: req.file,
+    });
+  } catch (error) {
+    console.error("Error during file upload:", error);
+    res.status(500).json({
+      message: "File upload failed",
+      error: error.message,
+    });
+  }
+});
+
+ 
+// ***************AUTO INCREMENT FID***********
+// Create a Redis client with the connection URL
+const { createClient } = require('redis');
+
+
+// Create a Redis client with the connection URL
+const redisClient = createClient({
+    url: 'redis://localhost:6379'  // Redis connection URL
+});
+
+
+// Handle connection event
+redisClient.on('connect', function() {
+    console.log('Connected to Redis...');
+});
+
+
+// Handle error event
+redisClient.on('error', function (err) {
+    console.error('Redis error:', err);
+});
+
+
+// Connect to Redis
+(async () => {
+    try {
+        await redisClient.connect();
+        console.log('Redis client connected.');
+
+
+        // Initialize the counter if it doesn't exist
+        const counter = await redisClient.get("complaintCounter");
+        if (counter === null) {
+            await redisClient.set("complaintCounter", 0);
+            console.log('complaintCounter initialized to 0');
+        }
+    } catch (err) {
+        console.error('Redis connection failed:', err);
+    }
+})();
+
+
+// Function to get the current complaint counter from Redis
+async function getCurrentComplaintCounter() {
+    try {
+        const counter = await redisClient.get('complaintCounter');
+        if (!counter) {
+            await redisClient.set('complaintCounter', 1);  // Initialize counter if not present
+            return 1;
+        }
+        return parseInt(counter, 10);  // Return the current counter value
+    } catch (err) {
+        console.error('Error fetching complaintCounter:', err);
+    }
+}
+
+
+
+
+// Example function to increment complaintCounter
+async function incrementComplaintCounter() {
+    try {
+        const newCounter = await redisClient.incr("complaintCounter");
+        console.log(`Complaint Counter incremented: ${newCounter}`);
+        return newCounter;  // return the new counter value
+    } catch (err) {
+        console.error('Error incrementing complaintCounter:', err);
+    }
+}
+
+
+
+
+// Endpoint to get the current complaint ID (no incrementing)
+router.get('/complaint-id', async (req, res) => {
+    try {
+        const currentCount = await getCurrentComplaintCounter();  // Get current counter value
+        const complaintID = `F${currentCount}`;  // Create the complaint ID
+        res.json({ complaintID });  // Send the complaint ID as response
+    } catch (err) {
+        console.error('Error fetching complaint ID:', err);
+        res.status(500).send('Error fetching complaint ID');
+    }
+});
+
+
+router.post('/incrementComplaintId', async (req, res) => {
+    console.log('Received request to increment complaint ID');
+    try {
+        const newCount = await incrementComplaintCounter();  // Increment the counter
+        const complaintID = `F${newCount}`;  // Create the new complaint ID
+        res.json({ complaintID });  // Send the incremented complaint ID as response
+    } catch (err) {
+        console.error('Error incrementing complaint ID:', err);
+        res.status(500).send('Error incrementing complaint ID');
+    }
+});
+
+
+
+
+// Ensure the client remains open for future use
+process.on('exit', () => {
+    redisClient.quit();
+});
+ 
+
+
+
+// Load credentials securely from environment variables for security
+const EMAIL_USER = process.env.EMAIL_USER; // Gmail email address
+const EMAIL_PASS = process.env.EMAIL_PASS; // Gmail App Password
+
+
+// -------------------- Function to Generate QR Code --------------------
+async function generateQRCode(data) {
+    try {
+        // Generate a QR code as a Base64 image
+        const qrCodeDataUrl = await qrcode.toDataURL(data); // Converts input "data" to a base64 QR image
+        return qrCodeDataUrl;
+    } catch (error) {
+        console.error('Error generating QR code:', error);
+        throw new Error('Failed to generate QR Code');
+    }
+}
+
+
+// -------------------- Function to Send Email with QR Code --------------------
+async function sendEmailWithQRCode(email, qrCodeDataUrl, UserName) {
+    try {
+        // Create a transporter object using Gmail SMTP
+        let transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: EMAIL_USER, // Sender email from .env
+                pass: EMAIL_PASS, // App Password from .env
+            },
+        });
+console.log('EMAIL_USER:', process.env.EMAIL_USER);
+console.log('EMAIL_PASS:', process.env.EMAIL_PASS);
+
+
+        // Extract Base64 data from the QR Code Data URL
+        const qrCodeBase64 = qrCodeDataUrl.split(',')[1]; // Splits "data:image/png;base64,..." and extracts the base64 string
+
+
+        // Email configuration
+        let mailOptions = {
+            from: EMAIL_USER, // Sender's email address
+            to: email, // Receiver's email
+            subject: 'FIR Submitted Successfully',
+            html: `
+                <p>Dear ${UserName},</p>
+                <p>This is to formally notify you that your FIR has been successfully submitted to the police department.</p>
+                <p>Please scan the QR code below to track the status of your complaint:</p>
+                <p>Thank you for using our services!</p>
+            `,
+            attachments: [
+                {
+                    filename: 'qrcode.png', // File name for attachment
+                    content: qrCodeBase64, // File content (base64 string)
+                    encoding: 'base64', // Specify content encoding
+                },
+            ],
+        };
+
+
+        // Send email using the transporter object
+        let info = await transporter.sendMail(mailOptions);
+        console.log('Email sent successfully:', info.response);
+    } catch (error) {
+        console.error('Error sending email:', error);
+        throw new Error('Failed to send email');
+    }
+}
+
+
+// -------------------- API Endpoint to Send Email with QR Code --------------------
+router.post('/sendEmail', async (req, res) => {
+    const { complainantEmail, UserName } = req.body;
+
+
+    // Input Validation
+    if (!complainantEmail || !UserName) {
+        return res.status(400).json({ message: 'Complainant email and user name are required.' });
+    }
+
+
+    try {
+        // Generate dynamic URL for tracking complaint status
+        const statusURL = `http://localhost:8081/user/${complainantEmail}?id=${Math.random().toString(36).substring(7)}`;
+        console.log('Generated Status URL:', statusURL);
+
+
+        // Generate QR Code for the status URL
+        const qrCodeDataUrl = await generateQRCode(statusURL);
+
+
+        // Send an email with the generated QR code
+        await sendEmailWithQRCode(complainantEmail, qrCodeDataUrl, UserName);
+
+
+        // Send success response back to the client
+        res.status(200).json({
+            message: 'FIR submitted successfully and email sent!',
+            data: {
+                complainantEmail,
+                UserName,
+                trackingURL: statusURL,
+            },
+        });
+    } catch (error) {
+        console.error('Error processing request:', error);
+        res.status(500).json({ message: 'Internal server error', error: error.message });
+    }
+});
+
+
+
+
+
+ 
 
 module.exports = router;
