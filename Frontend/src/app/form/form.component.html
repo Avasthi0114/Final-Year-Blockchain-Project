@@ -16,11 +16,34 @@
 </div>
 
 <div class="content"> 
-<h1 class="heading">Complainant Form</h1>
-<form [formGroup]="complainantForm" (ngSubmit)="submitAction()">
+
+
+  <!-- Alert for insufficient details -->
+  <div *ngIf="responseMessage && !isSuccess" class="alert alert-error">
+    {{ responseMessage }}
+  </div>
+  
+  <!-- Alert for successful submission -->
+  <div *ngIf="responseMessage && isSuccess" class="alert alert-success">
+    {{ responseMessage }}
+  </div>
+
+<form [formGroup]="complainantForm"   (ngSubmit)="submitAction()">
   <div class="personal-details">
     <h1>Personal Details:</h1>
     <hr />
+
+    <div class="form-row">
+      <label>
+    Complaint ID:<span class="required">*</span>
+    <input
+      type="text"
+      formControlName="ComplaintID"
+      readonly
+      placeholder="Complaint ID will appear after loading. Refresh if not visible."
+    />
+  </label>
+</div>
 
     <div class="form-row">
       <label>
@@ -379,7 +402,7 @@
 
     <label>
       Evidences (if any):
-      <input type="file"  multiple  placeholder="Upload Evidences" />
+      <input type="file" formControlName="file" (change)="onFileSelected($event)" multiple  placeholder="Upload Evidences" />
     </label>
   </div>
 
