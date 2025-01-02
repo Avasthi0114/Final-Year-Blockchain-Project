@@ -20,6 +20,9 @@ export class HttpService {
  //new
  constructor(private httpClient:HttpClient){}
  url = environment.apiUrl;
+
+ ipfsurl = environment.ipfsurl;
+
  addInformation(data: any) {
   console.log("Data being sent: ", data);
   return this.httpClient.post(this.url+"/user/form", data, {
@@ -70,7 +73,6 @@ LoginPolice(data:any){
 }
 
 
-
 generatePDF(data: any){
   return this.httpClient.post(this.url+ "/user/generatereport",data,{
     headers: new HttpHeaders().set('Content-Type',"application/json")
@@ -88,7 +90,11 @@ getPDF(data: any): Observable<Blob> {
 }
 
 
-
+uploadToIPFS(): Observable<any> {
+  return this.httpClient.post(`${this.ipfsurl}/uploadToIPFS`, {}, {
+    responseType: 'json' // Default type, expects a JSON response
+  });
+}
  
 
 }

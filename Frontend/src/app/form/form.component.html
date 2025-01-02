@@ -377,12 +377,30 @@
       <input type="text" formControlName="ReasonOfDelay" placeholder="Enter reason of delay in reporting (ex- xyz)" />
     </label>
 
-    <label>
+    <!-- <label>
       Evidences (if any):
       <input type="file"  multiple  placeholder="Upload Evidences" />
-    </label>
+    </label> -->
+
+    <label for="evidence">Upload Evidence</label>
+    <input
+      type="file"
+      id="evidence"
+      (change)="onFileSelect($event)"
+      class="form-control"
+      multiple
+    />
+
   </div>
 
   <button>Submit</button>
 </form>
+
+<div *ngIf="uploadResponse">
+  <p class="text-success">File(s) uploaded successfully!</p>
+  <ul>
+    <li *ngFor="let file of uploadedFiles">{{ file }}</li>
+  </ul>
+</div>
+
 </div>

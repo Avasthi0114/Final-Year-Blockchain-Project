@@ -73,9 +73,51 @@ export class FormComponent {
   httpClient = inject(HttpClient)
   httpService = inject(HttpService); 
   router = inject(Router);
+
+  selectedFiles: File[] = [];
+  uploadResponse: string | null = null;
+  uploadedFiles: string[] = [];
+  
+  constructor(
+    private http: HttpClient,
+    private ngxService: NgxUiLoaderService
+  ) {}
+  
+
+  // Capture files when selected
+  onFileSelect(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files) {
+      this.selectedFiles = Array.from(input.files);
+    }
+  }
+
+  // Submit the files
+  onSubmit(): void {
+    if (this.selectedFiles.length === 0) {
+      alert('Please select at least one file!');
+      return;
+    }
+
+    const formData = new FormData();
+    this.selectedFiles.forEach((file) => {
+      formData.append('evidence', file);
+    });
+
+    // Send the files to the backend
+    this.http.post<any>('http://localhost:3000/upload', formData).subscribe(
+      (response) => {
+        this.uploadResponse = response.message;
+        this.uploadedFiles = response.filePaths || [];
+      },
+      (error) => {
+        console.error('Error uploading files:', error);
+        alert('File upload failed!');
+      }
+    );
+  }
   
   responseMessage:any;
-  constructor(private ngxService: NgxUiLoaderService) {}
   complainantForm = new FormGroup({
       UserName: new FormControl('',[
         Validators.required,
@@ -221,34 +263,70 @@ export class FormComponent {
   };
 
   // Generate PDF and handle response
+  // this.httpService.generatePDF(data).subscribe(
+  //   (response: any) => {
+  //     if (response?.uuid) {
+  //       this.downloadPdf(response.uuid);
+  //       this.complainantForm.reset();
+  //       console.log("pdf downloaded");
+  //     } else {
+  //       console.error("PDF generation failed.");
+  //     }
+  //   },
+  //   (error: any) => {
+  //     this.responseMessage = error.error?.message || "Error generating PDF.";
+  //   }
+  // );
+
+  // this.httpService.uploadToIPFS().subscribe(
+  //   (response: any) => {
+  //     console.log("File uploaded to IPFS successfully:", response);
+  //     console.log("Folder CID:", response.folderCID);
+  //     console.log("File CID:", response.fileCID);
+  //     this.complainantForm.reset(); // Reset the form
+  //     this.ngxService.stop();
+  //   },
+  //   (error: any) => {
+  //     console.error("Error uploading file to IPFS:", error);
+  //     this.responseMessage = "Failed to upload file to IPFS.";
+  //     this.ngxService.stop();
+  //   }
+  // );
+
+  // Generate PDF and wait for its response
   this.httpService.generatePDF(data).subscribe(
     (response: any) => {
       if (response?.uuid) {
-        this.downloadPdf(response.uuid);
-        this.complainantForm.reset();
+        this.downloadPdf(response.uuid); // Download the PDF
+        console.log("PDF downloaded");
+
+        // After the PDF is downloaded, call uploadToIPFS
+        this.httpService.uploadToIPFS().subscribe(
+          (ipfsResponse: any) => {
+            console.log("File uploaded to IPFS successfully:", ipfsResponse);
+            console.log("Folder CID:", ipfsResponse.folderCID);
+            console.log("File CID:", ipfsResponse.fileCID);
+            this.complainantForm.reset(); // Reset the form
+            this.ngxService.stop();
+          },
+          (error: any) => {
+            console.error("Error uploading file to IPFS:", error);
+            this.responseMessage = "Failed to upload file to IPFS.";
+            this.ngxService.stop();
+          }
+        );
       } else {
         console.error("PDF generation failed.");
+        this.ngxService.stop();
       }
     },
     (error: any) => {
+      console.error("Error generating PDF:", error);
       this.responseMessage = error.error?.message || "Error generating PDF.";
+      this.ngxService.stop();
     }
   );
 
-  // Submit form data to add information
-  // this.httpService.addInformation(data).subscribe(
-  //   (response) => {
-  //     console.log('Form submitted successfully!', response);
-
-  //     // Reset the form only after a successful submission
-  //     this.complainantForm.reset();
-  //     this.ngxService.stop(); // Stop the loader after success
-  //   },
-  //   (error) => {
-  //     console.error('Error occurred:', error);
-  //     this.ngxService.stop(); // Stop the loader on error
-  //   }
-  // );
 }
 
 
