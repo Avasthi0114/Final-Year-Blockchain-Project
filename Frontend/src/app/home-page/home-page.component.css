@@ -1,37 +1,86 @@
-  
-  
+ 
   /* Top Menu styles */
   .topnav {
     display: flex;
-    justify-content: space-around;
-    background-color: #4cc1e9;
-    padding: 10px;
-    margin-top: 76px;
-    width: 100%;
-   position: fixed;
-   left:0;
+    justify-content: space-around; /* Evenly space the items */
+    align-items: center; /* Center items vertically */
+    background-color: #f9f9f9; /* Light, neutral background for professionalism */
+    padding-top: 15px;
+    padding-bottom: 15px;
+    margin-top: 140px; /* Space below the header */
+    width: calc(100% - 40px); /* Leave space on the sides */
+    position: fixed;
+    left: 20px; /* Space from the left */
+    right: 20px; /* Space from the right */
+    border-radius: 35px; /* Slightly rounded corners */
+    border: 3px solid #003366; /* A deep blue border representing trust and authority */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow for a professional look */
+    z-index: 2;
   }
   
   .topnav button {
-    background-color: #8bc34a;
-    border-radius: 5px;
-    border-color: #4cc1e9 ;
-    color: white;
-    font-size: 16px;
+    background-color: #003366; /* Deep blue for authority and government tone */
+    color: white; /* White text for contrast and readability */
+    font-size: 16px; /* Standard font size */
+    font-weight: bold; /* Bold text for emphasis */
     cursor: pointer;
-    padding: 10px;
-    padding-left: 10px;
-    padding-right: 10px;
+    padding: 10px 20px; /* Better spacing for the buttons */
+    border: none; /* No borders for clean look */
+    border-radius: 5px; /* Slightly rounded buttons */
+    transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth hover effect */
   }
   
   .topnav button:hover {
-     background-color: #d60b0b;
+    background-color: #00509e; /* Lighter blue shade for hover effect */
+    transform: scale(1.05); /* Slightly enlarge the button */
   }
+  
+  .topnav button:focus {
+    outline: 3px solid #edece7; /* Yellow focus outline for accessibility */
+  }
+  
+  .topnav button:active {
+    background-color: #001f4d; /* Darker blue when pressed */
+    transform: scale(0.98); /* Slightly reduce size for feedback */
+  }
+  
+  .topnav a {
+    text-decoration: none; /* Remove underlines */
+    color: #003366; /* Match button color */
+    font-weight: bold; /* Emphasize links */
+    margin: 0 10px; /* Spacing between links */
+  }
+  
+  .topnav a:hover {
+    color: #00509e; /* Lighter blue on hover */
+    text-decoration: underline; /* Add underline for hover */
+  }
+  
+  .topnav-logo {
+    display: flex;
+    align-items: center;
+  }
+  
+  .topnav-logo img {
+    height: 40px; /* Maintain logo size */
+    margin-right: 15px; /* Space between logo and content */
+  }
+  
+  .topnav-title {
+    font-size: 18px; /* Adjust font size */
+    font-weight: bold; /* Emphasize the title */
+    color: #003366; /* Use government tone color */
+  }
+  
   
   /* Main Content styles */
   .main-content {
-    display: flex;
-    padding-top: 145px;
+   
+    padding-top: 135px;
+   /* padding-top: 210px; */
+  
+    z-index: -2;
+    
    
      
   }

@@ -182,7 +182,7 @@ create table signupdata (
    UNIQUE (Email)
 );
 
-create table ComplainantData (
+create table complainantdata (
    id int primary key AUTO_INCREMENT,
    Name varchar(250),
    Email varchar(250),
@@ -191,7 +191,7 @@ create table ComplainantData (
    UNIQUE (Email)
 );
 
-create table PoliceData (
+create table policedata (
    id int primary key AUTO_INCREMENT,
    Name varchar(250),
    Email varchar(250),
@@ -203,7 +203,7 @@ create table PoliceData (
    UNIQUE (Email)
 );
 
-create table ComplaintDetails (
+create table complaintdetails (
     ComplaintId int ,
     ComplainantId int,
     PlaceOfOccurance varchar(250),

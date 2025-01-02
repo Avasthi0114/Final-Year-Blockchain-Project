@@ -1,57 +1,41 @@
-  /* Navbar styles */
-  .topnavbar {
-    display: flex;
-    align-items: center;
-    background-color: #008dcf;
-    padding: 10px;
-    color: white;
-    position: fixed;
-    width: 100%;
-    top:0;
-    left:0;
-  }
-  
-  /* .navbar-logo img {
-    height: 60px;
-    margin-right: 15px;
-  } */
-  
-  .navbar-title h1 {
-    margin: 0;
-    font-size: 24px;
-  }
-  
-  .navbar-title p {
-    margin: 0;
-    font-size: 16px;
-  }
-  
-  .navbar-title small {
-    font-size: 12px;
-  }
+/* Navbar styles */
+.topnavbar {
+  display: flex;
+  align-items: center;
+  background-color: #050551;
+  padding: 20px;  
+  color: white;
+  position: fixed;
+  width: 100%;
+  top: 0;
+  left: 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
 
+/* Logo styles */
+ 
+
+.navbar-logo img {
+  height: 100px; /* Adjust height as needed */
+}
+
+/* Title styles */
+.navbar-title {
+  text-align: center; /* Center-align text block */
+  flex-grow: 0.75; /* Allow title to occupy remaining space */
   
-  
-  /* Top Menu styles */
-  /* .top-menu {
-    display: flex;
-    justify-content: space-around;
-    background-color: #4cc1e9;
-    padding: 10px;
-  }
-  
-  .top-menu button {
-    background-color: #8bc34a;
-    border-radius: 5px;
-    border-color: #4cc1e9 ;
-    color: white;
-    font-size: 16px;
-    cursor: pointer;
-    padding: 10px;
-    padding-left: 10px;
-    padding-right: 10px;
-  }
-  
-  .top-menu button:hover {
-     background-color: #d60b0b;
-  } */
+}
+
+.navbar-title h1 {
+  margin: 0;
+  font-size: 38px;
+}
+
+.navbar-title p {
+  margin: 5px 0 0; /* Add margin above the paragraph */
+  font-size: 16px;
+}
+
+.navbar-title small {
+  font-size: 12px;
+}

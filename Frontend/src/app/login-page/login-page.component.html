@@ -1,3 +1,5 @@
+
+<div class="login"> 
 <h1 class="heading">Login</h1>
 <form [formGroup]="LoginForm" (ngSubmit)="login()">
     <div class="form-row"> 
@@ -25,13 +27,15 @@
 
       
     </div>
+
     
   
   
     <div class="button-row"> 
       <button type="submit" >Login</button>
-      <button type="button"  (click)="navigateToSignUp()">Sign up</button>
+      <button type="signupbutton"  (click)="navigateToSignUp()">Sign up</button>
       <!-- <button type="submit" (click)="login()">Login</button>
       <button type="button" (click)="navigateToSignUp()">Sign up</button> -->
     </div>
   </form>
+</div>
