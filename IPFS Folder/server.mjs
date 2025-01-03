@@ -24,49 +24,6 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-// Route: Upload files to IPFS and create a folder
-// app.post('/upload', upload.array('files'), async (req, res) => {
-//     try {
-//         if (!req.files || req.files.length === 0) {
-//             return res.status(400).json({ error: 'No files uploaded' });
-//         }
-
-//         // Prepare the files to be added to IPFS
-//         const files = req.files;
-//         const filesToAdd = [];
-
-//         for (const file of files) {
-//             const fileContent = fs.readFileSync(file.path); // Read file content
-//             filesToAdd.push({ path: file.originalname, content: fileContent });
-//         }
-
-//         // Use ipfs.addAll to add files
-//         const addedFiles = [];
-//         for await (const result of ipfs.addAll(filesToAdd, { wrapWithDirectory: true })) {
-//             // Check if result has 'cid'
-//             if (result.cid) {
-//                 addedFiles.push({ path: result.path, cid: result.cid.toString() });
-//             }
-//         }
-
-//         if (addedFiles.length === 0) {
-//             return res.status(500).json({ error: 'No files were added to IPFS' });
-//         }
-
-//         // After adding all files, the CID of the directory (folder) is returned by ipfs.addAll
-//         const folderCID = addedFiles[0].cid; // Assuming folder CID is the same for all files in the directory
-
-//         // Send response with the folder CID and files' CIDs
-//         res.json({ folderCID, files: addedFiles });
-
-//     } catch (error) {
-//         console.error('Error adding files to IPFS:', error);
-//         res.status(500).json({ error: 'Error adding files to IPFS', details: error.message });
-//     }
-// });
-
-
-
 // Route: Retrieve folder contents from IPFS
 app.get('/folder/:cid', async (req, res) => {
     try {
@@ -212,7 +169,7 @@ app.post('/update-folder', upload.array('files'), async (req, res) => {
 });
 
 // Start the server
-const PORT = 3002;
+const PORT = 3000;
 app.listen(PORT, () => {
     console.log(`Server running at http://localhost:${PORT}`);
 });

@@ -73,7 +73,6 @@ export class FormComponent {
   httpClient = inject(HttpClient)
   httpService = inject(HttpService); 
   router = inject(Router);
-<<<<<<< HEAD
 
   selectedFiles: File[] = [];
   uploadResponse: string | null = null;
@@ -118,17 +117,17 @@ export class FormComponent {
     );
   }
   
-  responseMessage:any;
-=======
+//  responseMessage:any;
+
   isSuccess : boolean = false;
   responseMessage:any;
  
   selectedFile: File | null = null;
 
-  constructor(private ngxService: NgxUiLoaderService, private fb: FormBuilder, private http: HttpClient) {
+  // constructor(private ngxService: NgxUiLoaderService, private fb: FormBuilder, private http: HttpClient) {
     
-  }
->>>>>>> 1d4ebd13c3621dd0ffd629c52cac9a25fc93d407
+  // }
+
   complainantForm = new FormGroup({
     ComplaintID: new FormControl('', [
       Validators.required,
@@ -347,7 +346,6 @@ export class FormComponent {
   this.httpService.generatePDF(data).subscribe(
     (response: any) => {
       if (response?.uuid) {
-<<<<<<< HEAD
         this.downloadPdf(response.uuid); // Download the PDF
         console.log("PDF downloaded");
 
@@ -369,7 +367,6 @@ export class FormComponent {
       } else {
         console.error("PDF generation failed.");
         this.ngxService.stop();
-=======
         this.downloadPdf(response.uuid);
     //     this.complainantForm.reset();
     //   } else {
@@ -418,10 +415,10 @@ export class FormComponent {
         }, 5000); // 5000 milliseconds = 5 seconds
   
          
-      } else {
-        console.error('PDF generation failed.');
->>>>>>> 1d4ebd13c3621dd0ffd629c52cac9a25fc93d407
-      }
+      } 
+      // else {
+      //   console.error('PDF generation failed.');
+      // }
     },
     (error: any) => {
       console.error("Error generating PDF:", error);
@@ -432,8 +429,6 @@ export class FormComponent {
     
   );
 
-<<<<<<< HEAD
-=======
   // Submit form data to add information
   // this.httpService.addInformation(data).subscribe(
   //   (response) => {
@@ -463,9 +458,6 @@ export class FormComponent {
     );
   }
 
-
-  
->>>>>>> 1d4ebd13c3621dd0ffd629c52cac9a25fc93d407
 }
 
 
