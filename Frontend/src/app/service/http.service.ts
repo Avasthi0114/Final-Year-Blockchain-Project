@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { catchError, Observable, tap } from 'rxjs';
 import {environment} from '../../environments/environment';
+import { PoliceLoginResponse } from '../interface/police-login-response';
 
 @Injectable({
   providedIn: 'root'
@@ -35,12 +36,12 @@ incrementComplaintID(): Observable<{ complaintID: string }> {
 }
 
 
- addInformation(data: any) {
-  console.log("Data being sent: ", data);
-  return this.httpClient.post(this.url+"/user/form", data, {
-    headers: new HttpHeaders().set('Content-Type', "application/json")
-  });  
-}
+//  addInformation(data: any) {
+//   console.log("Data being sent: ", data);
+//   return this.httpClient.post(this.url+"/user/form", data, {
+//     headers: new HttpHeaders().set('Content-Type', "application/json")
+//   });  
+// }
 
 // SignUpForm(data:any){
 //     console.log("sign up data being sent:",data);
@@ -77,9 +78,16 @@ LoginComplainant(data:any){
   });
 }
 
-LoginPolice(data:any){
+// LoginPolice(data:any){
+//   console.log("login data being sent:", data);
+//   return this.httpClient.post(this.url+"/user/loginPolice",data,{
+//     headers: new HttpHeaders().set('Content-Type', "application/json")
+//   });
+// }
+
+LoginPolice(data:any):Observable<PoliceLoginResponse>{
   console.log("login data being sent:", data);
-  return this.httpClient.post(this.url+"/user/loginPolice",data,{
+  return this.httpClient.post<PoliceLoginResponse>(this.url+"/user/loginPolice",data,{
     headers: new HttpHeaders().set('Content-Type', "application/json")
   });
 }
@@ -124,7 +132,9 @@ sendEmailBackend(emailData: { complainantEmail: string, UserName: string }): Obs
 // }
 
 getComplainantEmail(): string | null {
+  console.log("complainantemail: "+this.complainantEmail);
   return this.complainantEmail;
+  console.log("complainantemail: "+this.complainantEmail);
 }
 
 
@@ -138,6 +148,8 @@ getComplainantDetailsByEmail(complainantEmail: string): Observable<any> {
     })
   );
 }
+
+
 
 
 }

@@ -168,7 +168,8 @@ export class FormComponent {
         Validators.required
       ]),
       UIDNo: new FormControl('',[
-        Validators.required
+        Validators.required,
+        Validators.pattern(/^\d{12}$/) // Regular expression for exactly 12 digits
       ]),
       PassportNo: new FormControl(''),
       DateOfIssue: new FormControl('',[
@@ -231,7 +232,6 @@ export class FormComponent {
         console.error('Error fetching complaint ID:', error);
       }
     );
-
     
   }
 

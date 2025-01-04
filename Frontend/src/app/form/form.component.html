@@ -1,16 +1,11 @@
-<div class="form-top-menu">
-  <button>Home</button>
-  <button>About Us</button>
-  <button routerLink="">Sign Out</button>
-</div>
-
+ 
 
 
 <div class="left-navbar">
   <ul>
     <button routerLink="/complainantdash">Home</button>
     <button routerLink="/eFIR">Register Complaint</button>
-    <button routerLink="/">View Complaints</button>
+    <button routerLink="/viewcomplaint">View Complaints</button>
     <button routerLink="/viewprofile">View Profile</button>
   </ul>
 </div>
@@ -29,6 +24,7 @@
   </div>
 
 <form [formGroup]="complainantForm"   (ngSubmit)="submitAction()">
+  <h1 class="heading">FIR form</h1>
   <div class="personal-details">
     <h1>Personal Details:</h1>
     <hr />
@@ -187,13 +183,29 @@
     <div class="form-row">
        
       <label>
-        Unique Identity Number(Adharcard No):<span class="required">*</span>
-        <input type="number" formControlName="UIDNo" placeholder="Enter unique identity number (ex- 1234 5678 9012)"
-               [ngClass]="{'is-invalid': complainantForm.get('UIDNo')?.invalid && (complainantForm.get('UIDNo')?.touched || complainantForm.get('UIDNo')?.dirty)}" />
+        Unique Identity Number (Aadharcard No):<span class="required">*</span>
+        <input 
+          type="number" 
+          formControlName="UIDNo" 
+          placeholder="Enter unique identity number (e.g., 123456789012)"
+          [ngClass]="{
+            'is-invalid': complainantForm.get('UIDNo')?.invalid && 
+                          (complainantForm.get('UIDNo')?.touched || complainantForm.get('UIDNo')?.dirty)
+          }" 
+        />
       </label>
-      <div *ngIf="complainantForm.get('UIDNo')?.invalid && (complainantForm.get('UIDNo')?.touched || complainantForm.get('UIDNo')?.dirty)" class="error-msg">
-        UID No is required
+      <div *ngIf="complainantForm.get('UIDNo')?.invalid && 
+                  (complainantForm.get('UIDNo')?.touched || complainantForm.get('UIDNo')?.dirty)" 
+           class="error-msg">
+        <span *ngIf="complainantForm.get('UIDNo')?.errors?.['required']">
+          UID No is required.
+        </span>
+        <span *ngIf="complainantForm.get('UIDNo')?.errors?.['pattern']">
+          UID must have exactly 12 digits.
+        </span>
       </div>
+      
+      
 
       <label>
         Passport Number: 

@@ -1,0 +1,200 @@
+/* Left Navbar Styles */
+.left-navbar {
+    height: 100vh; /* Full viewport height */
+    width: 250px; /* Fixed width */
+    position: fixed; /* Stays fixed on the left */
+    top: 144px; /* Adjust according to your header/menu */
+    left: 0;
+    background-color: #f4f6f9; /* Light gray background */
+    padding-top: 25px; /* Space above the buttons */
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    border-right: 2px solid #003366; /* Border for separation */
+  }
+  
+  .left-navbar ul {
+    list-style-type: none; /* Removes bullet points */
+    padding: 0;
+    margin: 0;
+  }
+  
+  .left-navbar button {
+    display: block; /* Ensures buttons stack vertically */
+    width: 90%; /* Takes most of the sidebar width */
+    margin: 15px auto; /* Centered with spacing */
+    padding: 12px 20px; /* Adjust padding for a comfortable size */
+    background-color: #033d78; /* Deep Blue */
+    color: white; /* White text color */
+    font-size: 16px; /* Readable text size */
+    font-weight: bold; /* Emphasize text */
+    border: none; /* Removes default border */
+    border-radius: 8px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+    text-align: center; /* Center align text */
+    transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Smooth hover effect */
+  }
+  
+  .left-navbar button:hover {
+    background-color: #00509e; /* Lighter Blue on Hover */
+    color: #ffffff; /* Keeps text white */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Shadow effect on hover */
+  }
+  
+  .left-navbar button:focus {
+    outline: none; /* Removes default focus outline */
+    color: #ffffff;
+  }
+  
+  .content {
+    margin-left: 250px; /* Adjust content to the right of the navbar */
+    padding: 20px;
+  }
+  
+  /* Overall Form Styling */
+  form {
+    width: 80%;
+    margin-left: 130px;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    font-family: Arial, sans-serif;
+    margin-top: 160px;
+  }
+  
+  .heading {
+    font-size: 2.2rem; /* Large and prominent font size */
+    font-weight: bold; /* Emphasize text with bold weight */
+    color: #000000; /* A professional blue shade */
+    text-align: center; /* Center align the heading */
+    letter-spacing: 1.5px; /* Add spacing between letters for readability */
+    display: inline-block; /* Adjusts width to fit content for better styling */
+    padding-bottom: 3px; /* Spacing between text and underline */
+    margin-left: 325px;
+  }
+  
+  /* Headings */
+  h1,
+  h3 {
+    margin-bottom: 10px;
+    color: #333;
+    font-size: 20px;
+    font-weight: bold;
+  }
+  
+  /* Horizontal Rule */
+  hr {
+    margin: 10px 0;
+    border: none;
+    border-top: 2px solid #ccc;
+  }
+  
+  /* Input and Select Fields */
+  input,
+  select {
+    width: 100%;
+    padding: 8px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+    margin-top: 5px;
+    background-color: #fff;
+  }
+  
+  /* Form Layout */
+  .form-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+  
+  label {
+    flex: 1;
+    font-weight: bold;
+    color: #020000;
+  }
+  
+  /* Labels for Single Inputs (outside form-row) */
+  label input,
+  label select {
+    width: 100%;
+  }
+  
+  /* Align the Single Input Labels */
+  label {
+    display: block;
+    margin-bottom: 10px;
+  }
+  
+  /* Styling for Buttons */
+  button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+    display: block;
+    margin: 20px auto;
+  }
+  
+  button:hover {
+    background-color: #0056b3;
+  }
+  
+  .is-invalid {
+    border: 2px solid red;
+  }
+  
+  /* Style error messages */
+  .error-msg {
+    color: red;
+    font-size: 12px;
+    margin-top: 5px;
+  }
+  
+  .required {
+    color: red;
+    font-size: 14px;
+  }
+  
+  /* Responsive Design for Mobile */
+  @media (max-width: 768px) {
+    .form-row {
+      flex-direction: column;
+    }
+  
+    input,
+    select {
+      width: 100%;
+    }
+  }
+  
+  .alert {
+    margin-top: 150px; /* Reduced gap */
+    margin-left: 320px;
+    padding: 15px;
+    border: 1px solid transparent;
+    border-radius: 5px;
+    width: 90%;
+    max-width: 500px;
+    text-align: center;
+    font-size: 16px;
+  }
+  
+  .alert-error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border-color: #f5c6cb;
+  }
+  
+  .alert-success {
+    background-color: #d4edda;
+    color: #155724;
+    border-color: #c3e6cb;
+  }
+  
