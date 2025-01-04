@@ -106,40 +106,6 @@ app.post('/uploadToIPFS', async (req, res) => {
     }
 });
 
-// app.post('/upload', async (req, res) => {
-//     try {
-//         // Specify the file name and path in the generated_pdf folder
-//         const fileName = 'FIR.pdf'; // Replace with the actual file name
-//         const filePath = path.join(generatedPdfDir, fileName);
-
-//         // Check if the file exists
-//         if (!fs.existsSync(filePath)) {
-//             console.log('File does not exist:', filePath);
-//             return res.status(400).json({ error: `File not found: ${fileName}` });
-//         }
-
-//         // Read the file content
-//         const fileContent = fs.readFileSync(filePath);
-
-//         // Add the file to IPFS
-//         const result = await ipfs.add({ path: fileName, content: fileContent });
-
-//         if (!result.cid) {
-//             console.log('Failed to add file to IPFS');
-//             return res.status(500).json({ error: 'Failed to add file to IPFS' });
-//         }
-
-//         console.log('File added to IPFS:', result);
-
-//         // Respond with the file's CID
-//         res.json({ cid: result.cid.toString(), path: result.path });
-//     } catch (error) {
-//         console.error('Error adding file to IPFS:', error);
-//         res.status(500).json({ error: 'Error adding file to IPFS', details: error.message });
-//     }
-// });
-
-
 // app.post('/update-folder', upload.array('files'), async (req, res) => {
 //     try {
 //         const existingFolderCID = req.body.existingFolderCID; // Retrieve the CID of the existing folder

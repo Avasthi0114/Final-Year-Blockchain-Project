@@ -128,25 +128,32 @@ router.post("/loginComplainant", (req, res) => {
   });
 });
 
+ 
+
 router.post("/loginPolice", (req, res) => {
   const user = req.body;
 
-  const query = "SELECT Email,password FROM policedata WHERE Email=?";
+  const query = "SELECT Email, password, PoliceOfficerRank FROM policedata WHERE Email=?";
   connection.query(query, [user.Email], async (err, results) => {
     if (!err) {
       if (results.length <= 0) {
         return res.status(401).json({ message: "Incorrect username or password" });
       } else {
         const dbPassword = results[0].password;
+        const officerRank = results[0].PoliceOfficerRank; // Retrieve the rank from the database
+
         // Compare the hashed password
         const hashedPassword = crypto
-        .createHash("sha256")
-        .update(user.password)
-        .digest("hex");
+          .createHash("sha256")
+          .update(user.password)
+          .digest("hex");
 
-        if  (hashedPassword === dbPassword) {
-          return res.status(200).json({ message: "Successfully logged in" });
-        } else  {
+        if (hashedPassword === dbPassword) {
+          return res.status(200).json({
+            message: "Successfully logged in",
+            rank: officerRank // Include the officer's rank in the response
+          });
+        } else {
           return res.status(402).json({ message: "Incorrect password" });
         }
       }
@@ -157,138 +164,6 @@ router.post("/loginPolice", (req, res) => {
 });
 
 
-// router.post("/form", (req, res) => {
-//   let user = req.body;
-//   console.log("Incoming user data:", user);
-//   // Check if UIDNo already exists
-//   query = "SELECT UIDNo FROM user WHERE UIDNo = ?";
-//   connection.query(query, [user.UIDNo], (err, results) => {
-//       if (!err) {
-//           if (results.length <= 0) {
-//               // Insert new user without email
-//               query = "INSERT INTO user(UserName, FatherOrHusbandName, DateOfBirth , Nationality,PhoneNumber, PermanentAddress, TemporaryAddress, UIDNo, PassportNo, DateOfIssue, PlaceOfIssue, IDType, IDNumber, Occupation, PropertyCategory, PropertyType, DescriptionOfProperty, TotleValueOfProperty, ValueOfProperty, OccurenceDay, OccurenceDateFrom, OccurenceDateTo, OccurenceTimePeriod, OccurenceTimeFrom, OccurenceTimeTo, OccurenceDate, OccurenceTime, Occurence, Accused, FirstInformationcontent, ReasonOfDelay,complainantemail) VALUES(?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?)";
-
-//               connection.query(query, [
-//                   user.UserName,
-//                   user.FatherOrHusbandName,
-//                   user.DateOfBirth,
-//                   user.Nationality,
-//                   user.PhoneNumber,
-//                   user.PermanentAddress,
-//                   user.TemporaryAddress,
-//                   user.UIDNo,
-//                   user.PassportNo,
-//                   user.DateOfIssue,
-//                   user.PlaceOfIssue,
-//                   user.IDType,
-//                   user.IDNumber,
-//                   user.Occupation,
-//                   user.PropertyCategory,
-//                   user.PropertyType,
-//                   user.DescriptionOfProperty,
-//                   user.TotleValueOfProperty,
-//                   user.ValueOfProperty,
-//                   user.OccurenceDay,
-//                   user.OccurenceDateFrom,
-//                   user.OccurenceDateTo,
-//                   user.OccurenceTimePeriod,
-//                   user.OccurenceTimeFrom,
-//                   user.OccurenceTimeTo,
-//                   user.OccurenceDate,
-//                   user.OccurenceTime,
-//                   user.Occurence,
-//                   user.Accused,
-//                   user.FirstInformationcontent,
-//                   user.ReasonOfDelay,
-//                   user.complainantemail,
-//               ], (err, results) => {
-//                   if (!err) {
-//                       return res.status(200).json({ message: "Successfully added" });
-//                   } else {
-//                       return res.status(500).json(err);
-//                   }
-//               });
-//           } else {
-//               return res.status(400).json({ message: "User with this UIDNo already exists" });
-//           }
-//       } else {
-//           return res.status(500).json(err);
-//       }
-//   });
-// });
-
- 
-
-//creating login APIs
-// router.post("/login", (req, res) => {
-//   const user = req.body;
-//   query = "select username,password, from signupdata where email=?";
-//   connection.query(query, [user.email], (err, results) => {
-//     if (!err) {
-//       if (results.length <= 0 || results[0].password != user.password) {
-//         return res
-//           .status(401)
-//           .json({ message: "incorrect username or password" });
-//       } else if (results[0].status == "false") {
-//         return res.status(401).json({ message: "wait for admin approval" });
-//       } else if (results[0].password == user.password) {
-//         const response = { email: results[0].email };
-//         const accessToken = jwt.sign(response, process.env.ACCESS_TOKEN, {
-//           expiresIn: "8h",
-//         });
-//         res.status(200).json({ token: accessToken });
-//       } else {
-//         return res.status(400).json({ message: "something went wrong" });
-//       }
-//     } else {
-//       return res.status(500).json(err);
-//     }
-//   });
-// });
-
-//api for forget password
-// var transporter = nodemailer.createTransport({
-//     service: 'gmail',
-//     auth:{
-//           user: process.env.EMAIL,
-//           pass: process.env.PASSWORD
-//     }
-// })
-
-// router.post('/forgotPassword',(req,res)=>{
-//     const user = req.body;
-//     query = "select email,password from user where email=?";
-//     connection.query(query,[user.email],(err,results)=>{
-//         if(!err){
-//             if(results.length <=0){
-//                 return res.status(200).json({message: "password sent successfully on your email"});
-//             }
-//             else{
-//                 var mailOptions = {
-//                     from: proccess.env.EMAIL,
-//                     to: results[0].email,
-//                     subject: 'password by cafe management system',
-//                     html: '<p><b> your login details for cafe management system</b> <br><b>Email:</b>'+results[0].email+'<br><b>password: </b>'+results[0].password+'<br> <a href="https://localhost:4200">Click here to login</a></p>'
-//                 };
-//                 transporter.sendMail(mailOptions,function(error,info){
-//                     if(error){
-//                         console.log(error);
-//                     }
-//                     else{
-//                         console.log('email sent: '+info.response);
-//                     }
-//                 });
-//                 return res.status(200).json({message: "password sent successfully on your email"});
-//             }
-//         }
-//         else{
-//             return res.status(500).json(err);
-//         }
-//     })
-
-// });
-
- 
 
 router.post('/generatereport', (req, res) => {
   const generatedUuid = uuid.v1(); // Generate a unique ID
@@ -347,21 +222,15 @@ router.post('/generatereport', (req, res) => {
 
 router.post('/getPdf', (req, res) => {
   const { uuid } = req.body;
-  const filePath = path.resolve(__dirname, 'generated_pdf', 'partialReport.pdf');
-
+  // const filePath = `./generated_pdf/${uuid}.pdf`;
+  const filePath = path.join(__dirname, 'generated_pdf', `${uuid}.pdf`);
   // Check if file exists
   fs.access(filePath, fs.constants.F_OK, (err) => {
-    if (err) {
-      return res.status(404).json({ message: 'File not found' });
-    }
-
-    // Send the file as a response with error handling
-    res.sendFile(filePath, (err) => {
       if (err) {
-        console.error('Error sending file:', err);
-        res.status(500).json({ message: 'Error sending file' });
+          return res.status(404).json({ message: 'File not found' });
       }
-    });
+      // Send the file as a response
+      res.sendFile(filePath, { root: __dirname });
   });
 });
  
@@ -412,7 +281,7 @@ const storage = multer.diskStorage({
   },
   filename: (req, file, cb) => {
     // Set the file name
-    cb(null, Date.now() + "_" + file.originalname);
+    cb(null, file.originalname);
   },
 });
 
@@ -658,7 +527,29 @@ router.post('/sendEmail', async (req, res) => {
         res.status(500).json({ message: 'Internal server error', error: error.message });
     }
 });
+ 
+// router.get('/api/complaints', async (req, res) => {
+//   const Email = req.query.Email;
 
+//   // Validate if email is provided
+//   if (!Email) {
+//     return res.status(400).json({ error: 'Email parameter is required.' });
+//   }
+
+//   const query = `
+//     SELECT cd.ComplaintId, cd.PlaceOfOccurance, cd.Greviance
+//     FROM complaintdetails cd
+//     INNER JOIN complainantdata c ON cd.ComplainantId = c.ComplainantId
+//     WHERE c.Email = ?;
+//   `;
+
+//   try {
+//     const [rows] = await connection.execute(query, [Email]);
+//     res.json(rows);
+//   } catch (error) {
+//     res.status(500).json({ error: error.message });
+//   }
+// });
 
 
 
