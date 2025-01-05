@@ -12,7 +12,7 @@ import { PolicedashComponent } from './policetview/policedash/policedash.compone
 import { PoliceViewprofileComponent } from './policetview/police-viewprofile/police-viewprofile.component';
 import { ManageComplaintComponent } from './policetview/manage-complaint/manage-complaint.component';
 import { PoliceFIRFormComponent } from './policetview/police-fir-form/police-fir-form.component';
-import { ViewComplainantComponent } from './complainantview/view-complainant/view-complainant.component';
+import { ViewComplaintsComponent } from './complainantview/view-complaints/view-complaints.component';
  
  
 
@@ -31,7 +31,7 @@ export const routes: Routes = [
         path: 'viewprofile', component:  ViewProfileComponent
     },
     {
-        path: 'viewcomplaint', component:   ViewComplainantComponent
+        path: 'viewcomplaint', component:    ViewComplaintsComponent
     },
     {
         path: 'policedash', component:  PolicedashComponent

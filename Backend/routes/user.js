@@ -163,6 +163,8 @@ router.post("/loginPolice", (req, res) => {
   });
 });
 
+ 
+
 
 
 router.post('/generatereport', (req, res) => {
@@ -203,7 +205,8 @@ router.post('/generatereport', (req, res) => {
       Occurence: userDetails.Occurence,
       Accused: userDetails.Accused,
       FirstInformationcontent: userDetails.FirstInformationcontent,
-      ReasonOfDelay: userDetails.ReasonOfDelay
+      ReasonOfDelay: userDetails.ReasonOfDelay,
+      GrievenceTitle: userDetails.GrievenceTitle
   }, (err, results) => {
       if (err) {
           return res.status(502).json(err);
@@ -281,7 +284,7 @@ const storage = multer.diskStorage({
   },
   filename: (req, file, cb) => {
     // Set the file name
-    cb(null, file.originalname);
+    cb(null, Date.now() + "_" + file.originalname);
   },
 });
 
@@ -531,16 +534,14 @@ router.post('/sendEmail', async (req, res) => {
 // router.get('/api/complaints', async (req, res) => {
 //   const Email = req.query.Email;
 
-//   // Validate if email is provided
 //   if (!Email) {
 //     return res.status(400).json({ error: 'Email parameter is required.' });
 //   }
 
 //   const query = `
-//     SELECT cd.ComplaintId, cd.PlaceOfOccurance, cd.Greviance
-//     FROM complaintdetails cd
-//     INNER JOIN complainantdata c ON cd.ComplainantId = c.ComplainantId
-//     WHERE c.Email = ?;
+//     SELECT ComplaintId, PlaceOfOccurance, Grievance
+//     FROM complaintdetails
+//     WHERE Email = ?;
 //   `;
 
 //   try {
@@ -552,7 +553,60 @@ router.post('/sendEmail', async (req, res) => {
 // });
 
 
+router.post("/addComplaint", (req, res) => {
+  const { ComplaintId, PlaceOfOccurance, Grievance, Email } = req.body;
 
+  // Check if the complaint already exists
+  const query = "SELECT ComplaintId FROM complaintdetails WHERE ComplaintId=?";
+  connection.query(query, [ComplaintId], (err, results) => {
+    if (!err) {
+      if (results.length > 0) {
+        return res.status(400).json({ message: "ComplaintId already exists" });
+      } else {
+        // Insert the new complaint into the database
+        const insertQuery =
+          "INSERT INTO complaintdetails (ComplaintId, PlaceOfOccurance, Grievance, Email) VALUES (?, ?, ?, ?)";
+        connection.query(
+          insertQuery,
+          [ComplaintId, PlaceOfOccurance, Grievance, Email],
+          (insertErr, insertResults) => {
+            if (!insertErr) {
+              return res.status(201).json({
+                message: "Complaint successfully registered",
+                data: insertResults,
+              });
+            } else {
+              console.error("Error inserting complaint:", insertErr);
+              return res.status(500).json({ message: "Error inserting complaint", error: insertErr });
+            }
+          }
+        );
+      }
+    } else {
+      console.error("Error checking complaint existence:", err);
+      return res.status(500).json({ message: "Error checking complaint existence", error: err });
+    }
+  });
+});
+
+
+router.get('/complaints/:Email', async (req, res) => {
+  const { Email } = req.params;
+
+  try {
+    // Use promise-based query
+    const [rows] = await connection.promise().query('SELECT * FROM  complaintdetails WHERE Email = ?', [Email]);
+
+    if (rows.length === 0) {
+      return res.status(404).json({ message: 'Complaint not found' });
+    }
+
+    res.json(rows);  // Send the first result if there's a match
+  } catch (error) {
+    console.error('Error fetching complainant:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
 
  
 

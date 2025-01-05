@@ -391,10 +391,26 @@
     </div>
 
     <div class="form-row">
-      <label>
-        Occurence:
+      <!-- <label>
+        Place of occurence:
         <input type="text" formControlName="Occurence" placeholder="Enter Occurence" />
+      </label> -->
+
+      <label>
+        Place of occurence:<span class="required">*</span>
+        <input type="text" formControlName="Occurence" placeholder="Enter Place of occurence (ex- xyz)"
+               [ngClass]="{'is-invalid': complainantForm.get('Occurence')?.invalid && (complainantForm.get('Occurence')?.touched || complainantForm.get('Occurence')?.dirty)}" />
       </label>
+      <div *ngIf="complainantForm.get('Occurence')?.invalid && (complainantForm.get('Occurence')?.touched || complainantForm.get('Occurence')?.dirty)" class="error-msg">
+        <!-- Required validation message -->
+        <div *ngIf="complainantForm.get('Occurence')?.hasError('required')">
+          Place of occurence is required.
+        </div>
+        <!-- Pattern validation message -->
+        <div *ngIf="complainantForm.get('Occurence')?.hasError('pattern') && !complainantForm.get('Occurence')?.hasError('required')">
+          Place of occurence must contain only characters.
+        </div>
+      </div>
 
       <label>
         Accused:
@@ -407,6 +423,23 @@
         <input type="text" formControlName="FirstInformationcontent" placeholder="Enter first information content (ex- xyz)" />
       </label>
 
+      
+        <label>
+           Grievence title<span class="required">*</span>
+          <input type="text" formControlName="GrievenceTitle" placeholder="Enter GrievenceTitle (ex- xyz)"
+                 [ngClass]="{'is-invalid': complainantForm.get('GrievenceTitle')?.invalid && (complainantForm.get('GrievenceTitle')?.touched || complainantForm.get('GrievenceTitle')?.dirty)}" />
+        </label>
+        <div *ngIf="complainantForm.get('GrievenceTitle')?.invalid && (complainantForm.get('GrievenceTitle')?.touched || complainantForm.get('GrievenceTitle')?.dirty)" class="error-msg">
+          <!-- Required validation message -->
+          <div *ngIf="complainantForm.get('GrievenceTitle')?.hasError('required')">
+            GrievenceTitle is required.
+          </div>
+          <!-- Pattern validation message -->
+          <div *ngIf="complainantForm.get('GrievenceTitle')?.hasError('pattern') && !complainantForm.get('GrievenceTitle')?.hasError('required')">
+            GrievenceTitle must contain only characters.
+          </div>
+        </div>
+
     <label>
       Reason of Delay in reporting:
       <input type="text" formControlName="ReasonOfDelay" placeholder="Enter reason of delay in reporting (ex- xyz)" />
@@ -417,6 +450,8 @@
       <input type="file" formControlName="file" (change)="onFileSelected($event)" multiple  placeholder="Upload Evidences" />
     </label>
   </div>
+
+
 
   <button>Submit</button>
 </form>

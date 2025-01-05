@@ -2,13 +2,14 @@ import { Component, inject } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { HttpService } from '../service/http.service';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { ToastrService } from 'ngx-toastr'; 
 import { Router, RouterLink } from '@angular/router';
 import { NgxUiLoaderModule, NgxUiLoaderService } from 'ngx-ui-loader';
 import { saveAs } from 'file-saver'; //For saving pdf
 import { response } from 'express';
 import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
+import { EmailService } from '../service/email.service';
 
 export function occurrenceDateValidator(): ValidatorFn {
   return (group: AbstractControl): ValidationErrors | null => {
@@ -64,7 +65,8 @@ export function dateAfterTodayValidator(control: AbstractControl): ValidationErr
 @Component({
   selector: 'app-form',
   standalone: true,
-  imports: [ReactiveFormsModule,CommonModule,NgxUiLoaderModule, RouterLink],   
+  imports: [ReactiveFormsModule,CommonModule,NgxUiLoaderModule, RouterLink], 
+   providers: [DatePipe],  
   templateUrl: './form.component.html',
   styleUrls: ['./form.component.css']   
 })
@@ -72,15 +74,19 @@ export function dateAfterTodayValidator(control: AbstractControl): ValidationErr
 export class FormComponent {
   httpClient = inject(HttpClient)
   httpService = inject(HttpService); 
+  emailService = inject(EmailService);
   router = inject(Router);
   isSuccess : boolean = false;
   responseMessage:any;
+  complainantEmail: any;
  
   selectedFile: File | null = null;
 
-  constructor(private ngxService: NgxUiLoaderService, private fb: FormBuilder, private http: HttpClient) {
+  constructor(private ngxService: NgxUiLoaderService, private fb: FormBuilder, private http: HttpClient, private datePipe: DatePipe) {
     
   }
+
+  
   complainantForm = new FormGroup({
     ComplaintID: new FormControl('', [
       Validators.required,
@@ -163,10 +169,19 @@ export class FormComponent {
         dateAfterTodayValidator
       ]),
       OccurenceTime: new FormControl(''),
-      Occurence: new FormControl(''),
+      Occurence: new FormControl('',[
+        Validators.required,
+        Validators.pattern('^[a-zA-Z ]*$')
+
+      ]),
       Accused: new FormControl(''),
       FirstInformationcontent: new FormControl(''),
       ReasonOfDelay: new FormControl('')  ,
+      GrievenceTitle: new FormControl('',[
+        Validators.required,
+        Validators.pattern('^[a-zA-Z ]*$')
+
+      ]),
       file: new FormControl('')
   }, { validators: occurrenceDateValidator() });
 
@@ -185,6 +200,10 @@ export class FormComponent {
         console.error('Error fetching complaint ID:', error);
       }
     );
+
+    this.complainantEmail = this.emailService.getEmail();
+    console.log('Complainant ID from service: ' + this.complainantEmail);
+
     
   }
 
@@ -262,33 +281,35 @@ export class FormComponent {
     ReasonOfDelay: formData.ReasonOfDelay || null,
     complainantemail: formData.complainantemail,
     PhoneNumber: formData.PhoneNumber,
+    GrievenceTitle: formData.GrievenceTitle
   };
+
+
+  // Method to add a complaint
+
+  const complaintdata = {
+    ComplaintId: formData.ComplaintID,
+    PlaceOfOccurance: formData.Occurence ,
+    Grievance: formData.GrievenceTitle,
+    Email: this.complainantEmail
+  }
+   
+  this.httpService.addcomplaint(complaintdata).subscribe(
+    (response: any) => {
+      console.log('Complaint added successfully:', response);
+      
+    },
+    (error: any) => {
+       
+      console.error('Error adding complaint:', error);
+    }
+  );
+
 
   // Generate PDF and handle response
   this.httpService.generatePDF(data).subscribe(
     (response: any) => {
       if (response?.uuid) {
-        this.downloadPdf(response.uuid); // Download the PDF
-        console.log("PDF downloaded");
-
-        // After the PDF is downloaded, call uploadToIPFS
-        this.httpService.uploadToIPFS().subscribe(
-          (ipfsResponse: any) => {
-            console.log("File uploaded to IPFS successfully:", ipfsResponse);
-            console.log("Folder CID:", ipfsResponse.folderCID);
-            console.log("File CID:", ipfsResponse.fileCID);
-            this.complainantForm.reset(); // Reset the form
-            this.ngxService.stop();
-          },
-          (error: any) => {
-            console.error("Error uploading file to IPFS:", error);
-            this.responseMessage = "Failed to upload file to IPFS.";
-            this.ngxService.stop();
-          }
-        );
-      } else {
-        console.error("PDF generation failed.");
-        this.ngxService.stop();
         this.downloadPdf(response.uuid);
     //     this.complainantForm.reset();
     //   } else {
@@ -297,6 +318,7 @@ export class FormComponent {
 
     // },
          // Step 2: Send email
+         this.httpService.addcomplaint(complaintdata);
          if (data.complainantemail) {
           this.httpService.sendEmailBackend({
             complainantEmail: data.complainantemail,
@@ -337,10 +359,9 @@ export class FormComponent {
         }, 5000); // 5000 milliseconds = 5 seconds
   
          
-      } 
-      // else {
-      //   console.error('PDF generation failed.');
-      // }
+      } else {
+        console.error('PDF generation failed.');
+      }
     },
     (error: any) => {
       this.responseMessage = error.error?.message || "Error generating PDF.";

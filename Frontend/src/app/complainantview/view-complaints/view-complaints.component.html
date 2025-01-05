@@ -1,0 +1,35 @@
+<div class="left-navbar">
+    <ul>
+      <button routerLink="/complainantdash">Home</button>
+      <button routerLink="/eFIR">Register Complaint</button>
+      <button routerLink="/viewcomplaint">View Complaints</button>
+      <button routerLink="/viewprofile">View Profile</button>
+    </ul>
+  </div>
+
+  <div class="complaint-container">
+    <h2>Complaints</h2>
+  
+    <!-- Error message if data fetch fails -->
+    <div *ngIf="error" class="error-message">
+      {{ error }}
+    </div>
+  
+    <!-- Display complaints -->
+    <div *ngIf="complaints.length > 0; else noComplaints">
+      <div *ngFor="let complaint of complaints" class="complaint-row">
+        <div class="complaint-detail">
+          <strong>Complaint ID:</strong> {{ complaint.ComplaintId }}
+        </div>
+        <div class="complaint-detail">
+          <strong>Grievance:</strong> {{ complaint.Grievance }}
+        </div>
+      </div>
+    </div>
+  
+    <!-- No complaints message -->
+    <ng-template #noComplaints>
+      <p>No complaints found for this complainant.</p>
+    </ng-template>
+  </div>
+  
