@@ -67,12 +67,12 @@ app.post('/uploadToIPFS', async (req, res) => {
         console.log('File added to IPFS:', fileResult);
 
         // Delete the file after adding it to IPFS
-        try {
-            fs.unlinkSync(filePath); // Delete the file from the local directory
-            console.log(`Deleted file: ${filePath}`);
-        } catch (error) {
-            console.error(`Failed to delete file: ${filePath}`, error.message);
-        }
+        // try {
+        //     fs.unlinkSync(filePath); // Delete the file from the local directory
+        //     console.log(`Deleted file: ${filePath}`);
+        // } catch (error) {
+        //     console.error(`Failed to delete file: ${filePath}`, error.message);
+        // }
 
         // Simulate a folder by adding the file with a folder-like structure
         const folderResult = await ipfs.addAll([

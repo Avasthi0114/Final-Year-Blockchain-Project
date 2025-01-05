@@ -268,6 +268,27 @@ export class FormComponent {
   this.httpService.generatePDF(data).subscribe(
     (response: any) => {
       if (response?.uuid) {
+        this.downloadPdf(response.uuid); // Download the PDF
+        console.log("PDF downloaded");
+
+        // After the PDF is downloaded, call uploadToIPFS
+        this.httpService.uploadToIPFS().subscribe(
+          (ipfsResponse: any) => {
+            console.log("File uploaded to IPFS successfully:", ipfsResponse);
+            console.log("Folder CID:", ipfsResponse.folderCID);
+            console.log("File CID:", ipfsResponse.fileCID);
+            this.complainantForm.reset(); // Reset the form
+            this.ngxService.stop();
+          },
+          (error: any) => {
+            console.error("Error uploading file to IPFS:", error);
+            this.responseMessage = "Failed to upload file to IPFS.";
+            this.ngxService.stop();
+          }
+        );
+      } else {
+        console.error("PDF generation failed.");
+        this.ngxService.stop();
         this.downloadPdf(response.uuid);
     //     this.complainantForm.reset();
     //   } else {
@@ -316,9 +337,10 @@ export class FormComponent {
         }, 5000); // 5000 milliseconds = 5 seconds
   
          
-      } else {
-        console.error('PDF generation failed.');
-      }
+      } 
+      // else {
+      //   console.error('PDF generation failed.');
+      // }
     },
     (error: any) => {
       this.responseMessage = error.error?.message || "Error generating PDF.";
