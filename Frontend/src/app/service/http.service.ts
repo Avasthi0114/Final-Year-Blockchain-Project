@@ -22,8 +22,6 @@ export class HttpService {
  constructor(private httpClient:HttpClient){}
  url = environment.apiUrl;
 
- ipfsurl = environment.ipfsurl;
-
  private complainantEmail : string | null = null;
 
  getComplaintID(): Observable<{ complaintID: string }> {
@@ -36,12 +34,12 @@ incrementComplaintID(): Observable<{ complaintID: string }> {
 }
 
 
-//  addInformation(data: any) {
-//   console.log("Data being sent: ", data);
-//   return this.httpClient.post(this.url+"/user/form", data, {
-//     headers: new HttpHeaders().set('Content-Type', "application/json")
-//   });  
-// }
+ addcomplaint(data: any) {
+  console.log("Data being sent: ", data);
+  return this.httpClient.post(this.url+"/user/addComplaint", data, {
+    headers: new HttpHeaders().set('Content-Type', "application/json")
+  });  
+}
 
 // SignUpForm(data:any){
 //     console.log("sign up data being sent:",data);
@@ -109,11 +107,6 @@ getPDF(data: any): Observable<Blob> {
   });
 }
 
-uploadToIPFS(): Observable<any> {
-  return this.httpClient.post(`${this.ipfsurl}/uploadToIPFS`, {}, {
-    responseType: 'json' // Default type, expects a JSON response
-  });
-}
 
 sendEmailBackend(emailData: { complainantEmail: string, UserName: string }): Observable<any> {
   return this.httpClient.post(this.url + "/user/sendEmail", emailData);
@@ -148,8 +141,6 @@ getComplainantDetailsByEmail(complainantEmail: string): Observable<any> {
     })
   );
 }
-
-
 
 
 }
