@@ -1,3 +1,2 @@
 Installed chaincodes on peer:
-Package ID: FIRManagement_1:32d51ea9640bde3d7d8d7356a561906d8ad0cb8204c6f90bc9c7bd0d5db57305, Label: FIRManagement_1
-Package ID: FIRManagement_2:c42f53803646c7bf0861a97ece5304526714e2a4316291d9907f006355a4e851, Label: FIRManagement_2
+Package ID: FIRManagement_1:768604fda2682d325ed0030c072bb6527353f187cd0946531162d5673f0fbe37, Label: FIRManagement_1

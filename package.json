@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "@grpc/grpc-js": "^1.12.4",
+    "axios": "^1.7.9",
+    "uuid": "^11.0.3"
+  }
+}

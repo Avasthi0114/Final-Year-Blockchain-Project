@@ -119,7 +119,7 @@ app.post('/users', async function (req, res) {
 		return;
 	}
 	var token = jwt.sign({
-		exp: Math.floor(Date.now() / 1000) + parseInt(hfc.getConfigSetting('jwt_expiretime')),
+		// exp: Math.floor(Date.now() / 1000) + parseInt(hfc.getConfigSetting('jwt_expiretime')),
 		username: username,
 		orgName: orgName
 	}, app.get('secret'));
@@ -351,7 +351,6 @@ app.get('/channels/:channelName/chaincodes/:chaincodeName', async function (req,
     logger.debug('Query result:', message);  // Log the response message
     // res.send(message);
 	res.status(200).send({ data: message });
-
 
 });
 
