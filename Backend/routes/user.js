@@ -15,7 +15,106 @@ let path = require('path');
 var fs = require('fs');
 var uuid = require('uuid');
 
+const puppeteer = require('puppeteer');
+
+const axios = require('axios');
+
+//global declaration of authToken
+const authToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InNheWFsaSIsIm9yZ05hbWUiOiJPcmcxIiwiaWF0IjoxNzQxMDE4MDk4fQ.7spluXvixrwmIFtgM_uVmhxRjjaBHK2nl6RwG8derJI";
+
+router.post("/assignPolice", (req, res) => {
+  const { ComplaintId, PoliceId } = req.body;
+
+  if (!ComplaintId || !PoliceId) {
+    return res.status(400).json({ message: "ComplaintId and PoliceId are required" });
+  }
+
+  // Step 1: Fetch the PoliceStationId using PoliceId
+  const fetchStationQuery = "SELECT PoliceStationId FROM policedata WHERE PoliceOfficerId = ?";
+  connection.query(fetchStationQuery, [PoliceId], (err, stationResults) => {
+    if (err) {
+      console.error("Error fetching stationId:", err);
+      return res.status(500).json({ message: "Failed to fetch stationId", error: err });
+    }
+
+    if (stationResults.length === 0) {
+      return res.status(404).json({ message: "No stationId found for the given PoliceId" });
+    }
+
+    const stationId = stationResults[0].PoliceStationId;
+
+    // Step 2: Update the complaintdetails table to set status as "Assigned" and PoliceId
+    const updateQuery = "UPDATE complaintdetails SET Status = 'Assigned', PoliceId = ? WHERE ComplaintId = ?";
+    connection.query(updateQuery, [PoliceId, ComplaintId], (err, updateResults) => {
+      if (err) {
+        console.error("Error updating complaint details:", err);
+        return res.status(500).json({ message: "Error updating complaint details", error: err });
+      }
+
+      // Step 3: Make a blockchain API call to update the blockchain
+      const blockchainPayload = {
+        peers: ["peer0.org1.example.com", "peer0.org2.example.com"],
+        fcn: "addOfficerDetails",
+        args: [ComplaintId, PoliceId, stationId]
+      };
+
+      
+      axios
+        .post(
+          "http://localhost:4000/channels/fir-channel/chaincodes/FIRManagement",
+          blockchainPayload,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${authToken}`
+            }
+          }
+        )
+        .then((blockchainResponse) => {
+          console.log("Blockchain response:", blockchainResponse.data);
+
+          // Send success response to the client
+          res.status(200).json({
+            message: "Police assigned successfully and blockchain updated",
+            blockchainResponse: blockchainResponse.data
+          });
+        })
+        .catch((blockchainError) => {
+          console.error("Error invoking blockchain:", blockchainError.message);
+          res.status(500).json({
+            message: "Police assigned, but failed to update blockchain",
+            error: blockchainError.message
+          });
+        });
+    });
+  });
+});
+
+
+
   
+router.get('/policedata', (req, res) => {
+  const query = `SELECT Name, Email, PoliceOfficerRank AS Post, PoliceOfficerId, PoliceStationId FROM policedata`;
+  connection.query(query, (err, results) => {
+    if (err) {
+      console.error('Error fetching policedata:', err);
+      return res.status(500).json({ message: 'Internal Server Error' });
+    }
+    res.json(results);
+  });
+});
+
+router.get('/complaints', (req, res) => {
+  const query = `SELECT ComplaintId,PlaceOfOccurance,Grievance,Email,Status,PoliceId FROM complaintdetails`;
+  connection.query(query, (err, results) => {
+    if (err) {
+      console.error('Error fetching complaintdata:', err);
+      return res.status(500).json({ message: 'Internal Server Error' });
+    }
+    res.json(results);
+  });
+});
+
 
 router.post("/SignUpComplainant", async (req, res) => {
   let user = req.body;
@@ -163,17 +262,16 @@ router.post("/loginPolice", (req, res) => {
   });
 });
 
- 
 
 
-
-router.post('/generatereport', (req, res) => {
+router.post('/generatereport', async (req, res) => {
   const generatedUuid = uuid.v1(); // Generate a unique ID
   const userDetails = req.body;
 
-  // Render the EJS template to generate the PDF
-  ejs.renderFile(path.join(__dirname, "", "FIR_Report.ejs"), {
-    ComplaintID: userDetails.ComplaintID,
+  try {
+    // Render the EJS template to HTML
+    const htmlContent = await ejs.renderFile(path.join(__dirname, "", "FIR_Report.ejs"), {
+      ComplaintID: userDetails.ComplaintID,
       UserName: userDetails.UserName,
       FatherOrHusbandName: userDetails.FatherOrHusbandName,
       DateOfBirth: userDetails.DateOfBirth,
@@ -207,37 +305,65 @@ router.post('/generatereport', (req, res) => {
       FirstInformationcontent: userDetails.FirstInformationcontent,
       ReasonOfDelay: userDetails.ReasonOfDelay,
       GrievenceTitle: userDetails.GrievenceTitle
-  }, (err, results) => {
-      if (err) {
-          return res.status(502).json(err);
-      } else {
-          pdf.create(results).toFile('./generated_pdf/partialReport.pdf', function (err, data) {
-              if (err) {
-                  console.log(err);
-                  return res.status(503).json(err);
-              } else {
-                  return res.status(200).json({ uuid: generatedUuid });
-              }
-          });
-      }
-  });
+    });
+
+    // Launch Puppeteer to generate the PDF
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+
+    // Set the content of the page
+    await page.setContent(htmlContent);
+
+    // Generate the PDF and save it
+    const pdfPath = path.resolve(__dirname, '../generated_pdf/partialReport.pdf');
+    await page.pdf({
+      path: pdfPath,
+      format: 'A4',
+      printBackground: true
+    });
+
+    // Close Puppeteer
+    await browser.close();
+
+    // After the PDF is generated, send the complaintID and the UUID to /uploadToIPFS
+    const uploadResponse = await axios.post('http://localhost:3001/uploadToIPFS', {
+      complaintID: userDetails.ComplaintID // Send the dynamic ComplaintID
+    });
+
+     // Send the response back to the frontend after processing
+     res.status(200).json({
+      uuid: generatedUuid,
+      complaintID: userDetails.ComplaintID,
+      ipfsResponse: uploadResponse.data,
+    });
+
+  } catch (err) {
+    console.error('Error generating report:', err);
+    res.status(500).json({ message: 'Error generating report', error: err });
+  }
 });
 
 router.post('/getPdf', (req, res) => {
   const { uuid } = req.body;
-  // const filePath = `./generated_pdf/${uuid}.pdf`;
-  const filePath = path.join(__dirname, 'generated_pdf', `${uuid}.pdf`);
+  const filePath = path.resolve(__dirname, '..generated_pdf', 'partialReport.pdf');
+
   // Check if file exists
   fs.access(filePath, fs.constants.F_OK, (err) => {
+    if (err) {
+      return res.status(404).json({ message: 'File not found' });
+    }
+
+    // Send the file as a response with error handling
+    res.sendFile(filePath, (err) => {
       if (err) {
-          return res.status(404).json({ message: 'File not found' });
+        console.error('Error sending file:', err);
+        res.status(500).json({ message: 'Error sending file' });
       }
-      // Send the file as a response
-      res.sendFile(filePath, { root: __dirname });
+    });
   });
 });
- 
 
+ 
 router.get('/complainant/:Email', async (req, res) => {
   const { Email } = req.params;
 
@@ -316,101 +442,125 @@ router.post("/upload", upload.single("file"), (req, res) => {
  
 // ***************AUTO INCREMENT FID***********
 // Create a Redis client with the connection URL
-const { createClient } = require('redis');
+// const { createClient } = require('redis');
 
 
-// Create a Redis client with the connection URL
-const redisClient = createClient({
-    url: 'redis://localhost:6379'  // Redis connection URL
-});
+// // Create a Redis client with the connection URL
+// const redisClient = createClient({
+//     url: 'redis://localhost:6379'  // Redis connection URL
+// });
 
 
-// Handle connection event
-redisClient.on('connect', function() {
-    console.log('Connected to Redis...');
-});
+// // Handle connection event
+// redisClient.on('connect', function() {
+//     console.log('Connected to Redis...');
+// });
 
 
-// Handle error event
-redisClient.on('error', function (err) {
-    console.error('Redis error:', err);
-});
+// // Handle error event
+// redisClient.on('error', function (err) {
+//     console.error('Redis error:', err);
+// });
 
 
-// Connect to Redis
-(async () => {
-    try {
-        await redisClient.connect();
-        console.log('Redis client connected.');
+// // Connect to Redis
+// (async () => {
+//     try {
+//         await redisClient.connect();
+//         console.log('Redis client connected.');
 
 
-        // Initialize the counter if it doesn't exist
-        const counter = await redisClient.get("complaintCounter");
-        if (counter === null) {
-            await redisClient.set("complaintCounter", 0);
-            console.log('complaintCounter initialized to 0');
-        }
-    } catch (err) {
-        console.error('Redis connection failed:', err);
-    }
-})();
+//         // Initialize the counter if it doesn't exist
+//         const counter = await redisClient.get("complaintCounter");
+//         if (counter === null) {
+//             await redisClient.set("complaintCounter", 0);
+//             console.log('complaintCounter initialized to 0');
+//         }
+//     } catch (err) {
+//         console.error('Redis connection failed:', err);
+//     }
+// })();
 
 
-// Function to get the current complaint counter from Redis
-async function getCurrentComplaintCounter() {
-    try {
-        const counter = await redisClient.get('complaintCounter');
-        if (!counter) {
-            await redisClient.set('complaintCounter', 1);  // Initialize counter if not present
-            return 1;
-        }
-        return parseInt(counter, 10);  // Return the current counter value
-    } catch (err) {
-        console.error('Error fetching complaintCounter:', err);
-    }
-}
+// // Function to get the current complaint counter from Redis
+// async function getCurrentComplaintCounter() {
+//     try {
+//         const counter = await redisClient.get('complaintCounter');
+//         if (!counter) {
+//             await redisClient.set('complaintCounter', 1);  // Initialize counter if not present
+//             return 1;
+//         }
+//         return parseInt(counter, 10);  // Return the current counter value
+//     } catch (err) {
+//         console.error('Error fetching complaintCounter:', err);
+//     }
+// }
 
 
 
 
-// Example function to increment complaintCounter
-async function incrementComplaintCounter() {
-    try {
-        const newCounter = await redisClient.incr("complaintCounter");
-        console.log(`Complaint Counter incremented: ${newCounter}`);
-        return newCounter;  // return the new counter value
-    } catch (err) {
-        console.error('Error incrementing complaintCounter:', err);
-    }
-}
+// // Example function to increment complaintCounter
+// async function incrementComplaintCounter() {
+//     try {
+//         const newCounter = await redisClient.incr("complaintCounter");
+//         console.log(`Complaint Counter incremented: ${newCounter}`);
+//         return newCounter;  // return the new counter value
+//     } catch (err) {
+//         console.error('Error incrementing complaintCounter:', err);
+//     }
+// }
 
 
 
 
 // Endpoint to get the current complaint ID (no incrementing)
-router.get('/complaint-id', async (req, res) => {
-    try {
-        const currentCount = await getCurrentComplaintCounter();  // Get current counter value
-        const complaintID = `F${currentCount}`;  // Create the complaint ID
-        res.json({ complaintID });  // Send the complaint ID as response
-    } catch (err) {
-        console.error('Error fetching complaint ID:', err);
-        res.status(500).send('Error fetching complaint ID');
+// router.get('/complaint-id', async (req, res) => {
+//     try {
+//         const currentCount = await getCurrentComplaintCounter();  // Get current counter value
+//         const complaintID = `F${currentCount}`;  // Create the complaint ID
+//         res.json({ complaintID });  // Send the complaint ID as response
+//     } catch (err) {
+//         console.error('Error fetching complaint ID:', err);
+//         res.status(500).send('Error fetching complaint ID');
+//     }
+// });
+
+
+router.get('/complaint-id', (req, res) => {
+  // Query to get the current highest complaint ID number
+  const query = 'SELECT MAX(CAST(SUBSTRING(ComplaintId, 2) AS UNSIGNED)) AS currentCount FROM complaintdetails';
+
+  // Use the existing connection to query the database
+  connection.query(query, (err, results) => {
+    if (err) {
+      console.error('Error fetching current complaint counter:', err);
+      return res.status(500).send('Error fetching complaint ID');
     }
+
+    // If no complaint exists, initialize the count to 0
+    const currentCount = results[0].currentCount || 0;
+
+    // Generate the next Complaint ID (e.g., F1, F2, F3, etc.)
+    const nextComplaintID = `F${currentCount + 1}`;
+
+    // Send the next Complaint ID as a response
+    res.json({ complaintID: nextComplaintID });
+  });
 });
 
 
-router.post('/incrementComplaintId', async (req, res) => {
-    console.log('Received request to increment complaint ID');
-    try {
-        const newCount = await incrementComplaintCounter();  // Increment the counter
-        const complaintID = `F${newCount}`;  // Create the new complaint ID
-        res.json({ complaintID });  // Send the incremented complaint ID as response
-    } catch (err) {
-        console.error('Error incrementing complaint ID:', err);
-        res.status(500).send('Error incrementing complaint ID');
-    }
-});
+
+// router.post('/incrementComplaintId', async (req, res) => {
+//     console.log('Received request to increment complaint ID');
+//     try {
+//         const newCount = await incrementComplaintCounter();  // Increment the counter
+//         const complaintID = `F${newCount}`;  // Create the new complaint ID
+//         res.json({ complaintID });  // Send the incremented complaint ID as response
+//     } catch (err) {
+//         console.error('Error incrementing complaint ID:', err);
+//         res.status(500).send('Error incrementing complaint ID');
+//     }
+// });
 
 
 
@@ -554,7 +704,7 @@ router.post('/sendEmail', async (req, res) => {
 
 
 router.post("/addComplaint", (req, res) => {
-  const { ComplaintId, PlaceOfOccurance, Grievance, Email } = req.body;
+  const { ComplaintId, PlaceOfOccurance, Grievance, Email, Status } = req.body;
 
   // Check if the complaint already exists
   const query = "SELECT ComplaintId FROM complaintdetails WHERE ComplaintId=?";
@@ -565,10 +715,10 @@ router.post("/addComplaint", (req, res) => {
       } else {
         // Insert the new complaint into the database
         const insertQuery =
-          "INSERT INTO complaintdetails (ComplaintId, PlaceOfOccurance, Grievance, Email) VALUES (?, ?, ?, ?)";
+        "INSERT INTO complaintdetails (ComplaintId, PlaceOfOccurance, Grievance, Email, Status) VALUES (?, ?, ?, ?, 'Unassigned')";
         connection.query(
           insertQuery,
-          [ComplaintId, PlaceOfOccurance, Grievance, Email],
+          [ComplaintId, PlaceOfOccurance, Grievance, Email,Status],
           (insertErr, insertResults) => {
             if (!insertErr) {
               return res.status(201).json({
@@ -608,6 +758,39 @@ router.get('/complaints/:Email', async (req, res) => {
   }
 });
 
+router.get('/getPoliceIdByEmail/:email', (req, res) => {
+  const { email } = req.params;
+  const query = 'SELECT PoliceOfficerId FROM policedata WHERE Email = ?';
+  connection.query(query, [email], (err, results) => {
+    if (err) {
+      console.error('Error fetching Police ID:', err);
+      res.status(500).json({ message: 'Error fetching Police ID' });
+    } else if (results.length > 0) {
+      res.json({ PoliceOfficerId: results[0].PoliceOfficerId });
+    } else {
+      res.status(404).json({ message: 'Police ID not found' });
+    }
+  });
+});
+
+
+router.get('/getByPoliceId/:policeId', (req, res) => {
+  const { policeId } = req.params;
+  const query = 'SELECT * FROM complaintdetails WHERE PoliceId = ?';
+  connection.query(query, [policeId], (err, results) => {
+    if (err) {
+      console.error('Error fetching complaints:', err);
+      res.status(500).json({ message: 'Error fetching complaints' });
+    } else {
+      res.json(results);
+    }
+  });
+});
+
+
+
  
 
 module.exports = router;
+
+

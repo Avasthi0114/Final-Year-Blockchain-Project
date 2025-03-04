@@ -1,0 +1,52 @@
+
+<div class="form-top-menu">
+    <button>Home</button>
+    <button>About Us</button>
+    <button routerLink="">Sign Out</button>
+  </div>
+  
+  <div class="left-navbar">
+    <ul>
+      <button routerLink="/complainantdash">Home</button>
+      <button routerLink="/piviewcomplaints">View Complaints</button>
+      <button routerLink="/piviewofficer">View Officer</button>
+      <button routerLink="/piviewprofile">View Profile</button>
+    </ul>
+  </div>
+
+
+  <div class="officer-list">
+    <h2>Complaint List</h2>
+    <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
+    <table *ngIf="complaints.length > 0; else noData">
+      <thead>
+        <tr>
+          <th>ComplaintId</th>
+          <th>PlaceOfOccurence</th>
+          <th>Grievance</th>
+          <th>Email</th>
+          <th>Status</th>
+          <th>PoliceId</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let complaint of complaints">
+            <td>{{ complaint.ComplaintId }}</td>             <!-- Name -->
+            <td>{{ complaint.PlaceOfOccurance }}</td>            <!-- Email -->
+            <td>{{ complaint.Grievance }}</td>             <!-- Post (Police Officer Rank) -->
+            <td>{{ complaint.Email }}</td> 
+            
+            <td>
+                <button *ngIf="complaint.Status === 'Unassigned'" (click)="assignPolice(complaint.ComplaintId, complaint.Grievance, complaint.PlaceOfOccurance)">Assign Police</button>
+                <span *ngIf="complaint.Status !== 'Unassigned'">Assigned</span>  
+            </td>
+            <td>{{ complaint.PoliceId }}</td> 
+         
+          </tr>
+          
+      </tbody>
+    </table>
+    <ng-template #noData>
+      <p>No complaints found.</p>
+    </ng-template>
+  </div>

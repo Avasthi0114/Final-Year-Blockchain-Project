@@ -1,0 +1,122 @@
+.left-navbar {
+    height: 100vh; /* Full viewport height */
+    width: 250px; /* Fixed width */
+    position: fixed; /* Stays fixed on the left */
+    top: 144px; /* Adjust according to your header/menu */
+    left: 0;
+    background-color: #F4F6F9; /* Light gray background */
+    padding-top: 20px; /* Space above the buttons */
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    border-right: 2px solid #003366; /* Border for separation */
+  }
+  
+  .left-navbar ul {
+    list-style-type: none; /* Removes bullet points */
+    padding: 0;
+    margin: 0;
+  }
+  
+  .left-navbar button {
+    display: block; /* Ensures buttons stack vertically */
+    width: 90%; /* Takes most of the sidebar width */
+    margin: 15px auto; /* Centered with spacing */
+    padding: 12px 20px; /* Adjust padding for a comfortable size */
+    background-color: #033d78; /* Deep Blue */
+    color: white; /* White text color */
+    font-size: 16px; /* Readable text size */
+    font-weight: bold; /* Emphasize text */
+    border: none; /* Removes default border */
+    border-radius: 8px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+    text-align: center; /* Center align text */
+    transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Smooth hover effect */
+  }
+  
+  .left-navbar button:hover {
+    background-color: #00509E; /* Lighter Blue on Hover */
+    color: #FFFFFF; /* Keeps text white */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Shadow effect on hover */
+  }
+  
+  .left-navbar button:focus {
+    outline: none; /* Removes default focus outline */
+    color: #FFFFFF;
+  }
+
+  /* Style for the assign police container */
+.assign-police {
+    margin-top: 200px;
+    max-width: 600px;
+    margin-left: 500px;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Header styling */
+  .assign-police h2 {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
+  /* Paragraph styling */
+  .assign-police p {
+    font-size: 16px;
+    color: #555;
+    margin-bottom: 10px;
+  }
+  
+  /* Strong text styling */
+  .assign-police p strong {
+    font-weight: bold;
+    color: #333;
+  }
+  
+  /* Button styling */
+  .assign-police button {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    margin-top: 20px;
+    background-color: #4CAF50;
+    color: white;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .assign-police button:hover {
+    background-color: #45a049;
+  }
+  
+  .assign-police button:focus {
+    outline: none;
+  }
+  
+  /* Add responsiveness for smaller screens */
+  @media (max-width: 600px) {
+    .assign-police {
+      padding: 15px;
+    }
+  
+    .assign-police h2 {
+      font-size: 20px;
+    }
+  
+    .assign-police p {
+      font-size: 14px;
+    }
+  
+    .assign-police button {
+      font-size: 14px;
+      padding: 10px;
+    }
+  }
+  
+  
+  

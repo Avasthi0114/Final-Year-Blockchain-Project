@@ -1,9 +1,40 @@
- 
-  <div class="left-navbar">
-    <ul>
-      <button routerLink="/policedash">Home</button>
-      <button routerLink="/policeFIRform">Register Complaint</button>
-      <button routerLink="/manageComplaint">Manage Complaint</button>
-      <button routerLink="/policeviewprofile">View Profile</button>
-    </ul>
-  </div>
+<div class="left-navbar">
+  <ul>
+    <button routerLink="/policedash">Home</button>
+    <button routerLink="/policeFIRform">Register Complaint</button>
+    <button routerLink="/manageComplaint">Manage Complaint</button>
+    <button routerLink="/policeviewprofile">View Profile</button>
+  </ul>
+</div>
+
+<div *ngIf="complaints.length > 0">
+  <table>
+    <thead>
+      <tr>
+        <th>Complaint ID</th>
+        <th>Grievance</th>
+        <th>Status</th>
+        <th>PartialFIR</th> <!-- New column for actions -->
+        <th>Complete FIR</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let complaint of complaints">
+        <td>{{ complaint.ComplaintId }}</td>
+        <td>{{ complaint.Grievance }}</td>
+        <td>{{ complaint.Status }}</td>
+        <td>
+          <div class="complaint-actions">
+            <button (click)="viewPartialFIR(complaint)">See Partial FIR</button>
+          </div>
+        </td>
+        <td>
+          <button (click)="completeFIR(complaint)">Complete FIR</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<div *ngIf="complaints.length === 0">
+  <p>No complaints assigned to you.</p>
+</div>

@@ -1,0 +1,44 @@
+<div class="form-top-menu">
+    <button>Home</button>
+    <button>About Us</button>
+    <button routerLink="">Sign Out</button>
+  </div>
+  
+  <div class="left-navbar">
+    <ul>
+      <button routerLink="/complainantdash">Home</button>
+      <button routerLink="/piviewcomplaints">View Complaints</button>
+      <button routerLink="/piviewofficer">View Officer</button>
+      <button routerLink="/piviewprofile">View Profile</button>
+    </ul>
+  </div>
+
+  <div class="officer-list">
+    <h2>Officer List</h2>
+    <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
+    <table *ngIf="officers.length > 0; else noData">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Post</th>
+          <th>Officer ID</th>
+          <th>Police Station ID</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let officer of officers">
+            <td>{{ officer.Name }}</td>             <!-- Name -->
+            <td>{{ officer.Email }}</td>            <!-- Email -->
+            <td>{{ officer.Post }}</td>             <!-- Post (Police Officer Rank) -->
+            <td>{{ officer.PoliceOfficerId }}</td>  <!-- Police Officer ID -->
+            <td>{{ officer.PoliceStationId }}</td>  <!-- Police Station ID -->
+          </tr>
+          
+      </tbody>
+    </table>
+    <ng-template #noData>
+      <p>No officers found.</p>
+    </ng-template>
+  </div>
+  

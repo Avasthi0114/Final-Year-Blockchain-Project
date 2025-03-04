@@ -1,0 +1,55 @@
+  
+
+ <div class="left-navbar">
+    <ul>
+      <button routerLink="/complainantdash">Home</button>
+      <button routerLink="/piviewcomplaints">View Complaints</button>
+      <button routerLink="/piviewofficer">View Officer</button>
+      <button routerLink="/piviewprofile">View Profile</button>
+    </ul>
+  </div>
+
+  <div class="profile-container">
+    <h1 class="heading">Complainant profile</h1>
+   
+    <form [formGroup]="myform" class="profile-form">
+      <div class="form-group">
+        <label for="name">Name</label>
+        <input id="name" formControlName="Name" type="text" class="form-control" [readonly]="true" />
+      </div>
+  
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input id="email" formControlName="Email" type="email" class="form-control" [readonly]="true" />
+      </div>
+  
+      <div class="form-group">
+        <label for="phonenumber">PhoneNumber</label>
+        <input id="phonenumber" formControlName="PhoneNumber" type="number" class="form-control" [readonly]="true" />
+      </div>
+
+      <div class="form-group">
+        <label for="PoliceOfficerRank">PoliceOfficerRank</label>
+        <input id="PoliceOfficerRank" formControlName="PoliceOfficerRank" type="number" class="form-control" [readonly]="true" />
+      </div>
+
+      <div class="form-group">
+        <label for="PoliceOfficerId">PoliceOfficerId</label>
+        <input id="PoliceOfficerId" formControlName="PoliceOfficerId" type="number" class="form-control" [readonly]="true" />
+      </div>
+
+      <div class="form-group">
+        <label for="PoliceStationId">PoliceStationId</label>
+        <input id="PoliceStationId" formControlName="PoliceStationId" type="number" class="form-control" [readonly]="true" />
+      </div>
+  
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input id="password" formControlName="password" type="password" class="form-control" [readonly]="true" />
+      </div>
+  
+    </form>
+  </div>
+  
+   
+  
