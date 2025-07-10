@@ -1,0 +1,32 @@
+
+  <div class="left-navbar">
+    <ul>
+      <button routerLink="/complainantdash">Home</button>
+      <button routerLink="/piviewcomplaints">View Complaints</button>
+      <button routerLink="/piviewofficer">View Officer</button>
+      <button routerLink="/viewprofile">Assign Officer</button>
+    </ul>
+  </div>
+
+  <div class="assign-police">
+    <h2>Assign Police to Complaint</h2>
+    <p><strong>Complaint ID:</strong> {{ complaintId }}</p>
+    <p><strong>Grievance:</strong> {{ grievance }}</p>
+    <p><strong>Place of Occurrence:</strong> {{ placeOfOccurance }}</p>
+  
+
+    <div class="form-group">
+        <label><strong>Police Officer ID:</strong></label>
+        <input
+          type="text"
+          id="policeId"
+          [(ngModel)]="policeId"
+          placeholder="Enter Officer ID"
+          required
+        />
+      </div>
+    
+    <!-- Add logic to assign police here -->
+    <button (click)="assignPolice()">Assign Police</button>
+  </div>
+  

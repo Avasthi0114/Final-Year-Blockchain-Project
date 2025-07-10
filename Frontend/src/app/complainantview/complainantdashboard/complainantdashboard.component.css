@@ -1,0 +1,109 @@
+
+
+   
+  /* Top Menu styles */
+  .form-top-menu{
+    display: flex;
+    justify-content: space-around; /* Evenly space the items */
+    align-items: center; /* Center items vertically */
+    background-color: #f9f9f9; /* Light, neutral background for professionalism */
+    padding-top: 15px;
+    padding-bottom: 15px;
+    margin-top: 140px; /* Space below the header */
+    width: calc(100% - 15px); /* Leave space on the sides */
+    position: fixed;
+    left: 5px; /* Space from the left */
+    right: 20px; /* Space from the right */
+    border-radius: 35px; /* Slightly rounded corners */
+    border: 3px solid #003366; /* A deep blue border representing trust and authority */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow for a professional look */
+    z-index: 2;
+  }
+  
+  .form-top-menu button {
+    background-color: #043a71; /* Deep blue for authority and government tone */
+    color: white; /* White text for contrast and readability */
+    font-size: 16px; /* Standard font size */
+    font-weight: bold; /* Bold text for emphasis */
+    cursor: pointer;
+    padding: 10px 20px; /* Better spacing for the buttons */
+    border: none; /* No borders for clean look */
+    border-radius: 5px; /* Slightly rounded buttons */
+    transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth hover effect */
+  }
+  
+  .form-top-menu button:hover {
+    background-color: #00509e; /* Lighter blue shade for hover effect */
+    transform: scale(1.05); /* Slightly enlarge the button */
+  }
+  
+  .form-top-menu button:focus {
+    outline: 3px solid #edece7; /* Yellow focus outline for accessibility */
+  }
+  
+  .form-top-menu button:active {
+    background-color: #001f4d; /* Darker blue when pressed */
+    transform: scale(0.98); /* Slightly reduce size for feedback */
+  }
+  
+  .form-top-menu a {
+    text-decoration: none; /* Remove underlines */
+    color: #003366; /* Match button color */
+    font-weight: bold; /* Emphasize links */
+    margin: 0 10px; /* Spacing between links */
+  }
+  
+  .form-top-menu a:hover {
+    color: #00509e; /* Lighter blue on hover */
+    text-decoration: underline; /* Add underline for hover */
+  }
+  
+  /* Left Navbar Styles */
+.left-navbar {
+  height: 100vh; /* Full viewport height */
+  width: 250px; /* Fixed width */
+  position: fixed; /* Stays fixed on the left */
+  top: 224px; /* Adjust according to your header/menu */
+  left: 0;
+  background-color: #F4F6F9; /* Light gray background */
+  padding-top: 20px; /* Space above the buttons */
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  border-right: 2px solid #003366; /* Border for separation */
+}
+
+.left-navbar ul {
+  list-style-type: none; /* Removes bullet points */
+  padding: 0;
+  margin: 0;
+}
+
+.left-navbar button {
+  display: block; /* Ensures buttons stack vertically */
+  width: 90%; /* Takes most of the sidebar width */
+  margin: 15px auto; /* Centered with spacing */
+  padding: 12px 20px; /* Adjust padding for a comfortable size */
+  background-color: #033d78; /* Deep Blue */
+  color: white; /* White text color */
+  font-size: 16px; /* Readable text size */
+  font-weight: bold; /* Emphasize text */
+  border: none; /* Removes default border */
+  border-radius: 8px; /* Rounded corners */
+  cursor: pointer; /* Pointer cursor on hover */
+  text-align: center; /* Center align text */
+  transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Smooth hover effect */
+}
+
+.left-navbar button:hover {
+  background-color: #00509E; /* Lighter Blue on Hover */
+  color: #FFFFFF; /* Keeps text white */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Shadow effect on hover */
+}
+
+.left-navbar button:focus {
+  outline: none; /* Removes default focus outline */
+  color: #FFFFFF;
+}
+
+   
+   
+  

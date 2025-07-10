@@ -1,0 +1,100 @@
+<h1 class="heading">Sign Up</h1>
+<form [formGroup]="SignUpForm" (ngSubmit)="SignUp()">
+  <div class="form-group">
+    <label>
+      Name:<span class="required">*</span>
+      <input
+        type="text"
+        formControlName="Name"
+        placeholder="Enter name (ex- xyz)"
+        [ngClass]="{
+          'is-invalid': SignUpForm.get('Name')?.invalid &&
+          (SignUpForm.get('Name')?.touched || SignUpForm.get('Name')?.dirty)
+        }"
+      />
+    </label>
+    <div *ngIf="SignUpForm.get('Name')?.invalid && 
+                (SignUpForm.get('Name')?.touched || SignUpForm.get('Name')?.dirty)" 
+         class="error-msg">
+      <div *ngIf="SignUpForm.get('Name')?.hasError('required')">Name is required.</div>
+      <div *ngIf="SignUpForm.get('Name')?.hasError('pattern')">Name must contain only characters.</div>
+    </div>
+  </div>
+  <div class="form-group">
+    <label>
+      Email:<span class="required">*</span>
+      <input
+        type="email"
+        formControlName="Email"
+        placeholder="Enter email (ex- xyz@gmail.com)"
+        [ngClass]="{
+          'is-invalid': SignUpForm.get('Email')?.invalid &&
+          (SignUpForm.get('Email')?.touched || SignUpForm.get('Email')?.dirty)
+        }"
+      />
+    </label>
+    <div *ngIf="SignUpForm.get('Email')?.invalid && 
+                (SignUpForm.get('Email')?.touched || SignUpForm.get('Email')?.dirty)" 
+         class="error-msg">
+      <div *ngIf="SignUpForm.get('Email')?.hasError('required')">Email is required.</div>
+    </div>
+  </div>
+  <div class="form-group">
+    <label>
+      Phone Number:<span class="required">*</span>
+      <input
+        type="text"
+        formControlName="PhoneNumber"
+        placeholder="Enter phone number (ex- 0123456789)"
+        [ngClass]="{
+          'is-invalid': SignUpForm.get('PhoneNumber')?.invalid &&
+          (SignUpForm.get('PhoneNumber')?.touched || SignUpForm.get('PhoneNumber')?.dirty)
+        }"
+      />
+    </label>
+    <div *ngIf="SignUpForm.get('PhoneNumber')?.invalid && 
+                (SignUpForm.get('PhoneNumber')?.touched || SignUpForm.get('PhoneNumber')?.dirty)" 
+         class="error-msg">
+      <div *ngIf="SignUpForm.get('PhoneNumber')?.hasError('required')">Phone Number is required.</div>
+      <div *ngIf="SignUpForm.get('PhoneNumber')?.hasError('pattern')">Phone Number must contain only digits.</div>
+      <div *ngIf="SignUpForm.get('PhoneNumber')?.hasError('minlength')">Phone Number must be 10 digits long.</div>
+      <div *ngIf="SignUpForm.get('PhoneNumber')?.hasError('maxlength')">Phone Number must be 10 digits long.</div>
+    </div>
+  </div>
+  <div class="form-group">
+    <label>
+      Password:<span class="required">*</span>
+      <input
+        type="password"
+        formControlName="password"
+        placeholder="Enter password (ex- Xy123@ab)"
+        [ngClass]="{
+          'is-invalid': SignUpForm.get('password')?.invalid &&
+          (SignUpForm.get('password')?.touched || SignUpForm.get('password')?.dirty)
+        }"
+      />
+    </label>
+    <div *ngIf="SignUpForm.get('password')?.invalid && 
+                (SignUpForm.get('password')?.touched || SignUpForm.get('password')?.dirty)" 
+         class="error-msg">
+      <div *ngIf="SignUpForm.get('password')?.hasError('required')">Password is required.</div>
+      <div *ngIf="SignUpForm.get('password')?.hasError('minlength')">Password must be at least 8 characters long.</div>
+      <div *ngIf="SignUpForm.get('password')?.hasError('pattern')">
+        Password must include:
+        <ul>
+          <li>At least one uppercase letter</li>
+          <li>At least one lowercase letter</li>
+          <li>At least one digit</li>
+          <li>At least one special character</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="errorMessage" class="notification error">
+    {{ errorMessage }}
+  </div>
+
+  <div class="signup-btn">
+    <button type="submit">Sign Up</button>
+  </div>
+</form>
